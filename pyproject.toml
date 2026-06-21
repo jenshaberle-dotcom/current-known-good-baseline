@@ -1,0 +1,12 @@
+[project]
+name = "current-known-good-baseline"
+version = "0.1.0"
+description = "Living project-start baseline based on engineering and AI governance lessons learned."
+requires-python = ">=3.11"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
