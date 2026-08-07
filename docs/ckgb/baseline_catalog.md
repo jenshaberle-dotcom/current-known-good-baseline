@@ -6,7 +6,7 @@ Truth boundary: current known good, not best practice
 
 ## Purpose
 
-This catalog captures what we wish had been known before starting DON and the job-application-pipeline.
+This catalog captures what we wish had been known before starting DON, the job-application-pipeline, NOVI, and later engineering work.
 
 Each item is selectable. CKGB is intentionally over-complete.
 
@@ -23,6 +23,10 @@ Each item is selectable. CKGB is intentionally over-complete.
 | Item | Activation | Origin lesson | Selection criteria | Non-selection criteria |
 |---|---|---|---|---|
 | Repo is truth | Foundation | Chat and file handovers drifted; repository state must decide | Always | Never for serious project work |
+| [Session-independent re-entry](../governance/reentry_and_failure_replan.md) | Recommended | Interrupted sessions and stale handovers made blind continuation unsafe | Multi-session, agent-assisted, autonomous or interruption-prone work | Short-lived human-only toy work |
+| [Evidence-driven failure classification and replan](../governance/reentry_and_failure_replan.md) | Foundation | Fixed attempt counters caused premature stops while repeated unchanged actions created disguised loops | Automation, AI-assisted engineering, CI-driven repair or iterative problem solving | Static documentation with no iterative execution |
+| Bounded active slice | Recommended | Adjacent discoveries repeatedly expanded implementation scope and blurred acceptance boundaries | Long-lived, agent-assisted or multi-feature projects | Tiny single-purpose change |
+| [Anti-pattern catalog](../anti-patterns/README.md) | Recommended | Repeated failure modes re-entered projects through stale governance and copied patterns | Repeated project family or agent-assisted engineering | One-off toy work with no reusable governance |
 | Ruff before first feature code | Foundation | Retrofitted linting is expensive | Python project | Non-Python project with equivalent lint |
 | Pytest baseline | Foundation | Validation must be executable | Python project | Non-Python project with equivalent tests |
 | Secret scanning | Foundation | Secret leakage is high-impact and cheap to detect | Repo with config, keys or external calls | No secrets possible and private toy repo |
