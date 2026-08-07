@@ -1,6 +1,7 @@
 # Anti-Pattern: Zombie Retry Rule
 
 Technical name: fixed-count retry anti-pattern
+Deadwalker codename: The Deadwalker
 Status: prohibited legacy pattern
 Origin: repeated DON/MCP governance drift and cross-project reappearance of an obsolete fixed-attempt stop rule
 
@@ -9,6 +10,8 @@ Origin: repeated DON/MCP governance drift and cross-project reappearance of an o
 The rule is dead, but it keeps returning.
 
 It does not eat brains. It creates dumb stops.
+
+A Deadwalker is not an invented rule. It is more dangerous precisely because it was once legitimately alive: historically real authority that has been superseded but later walks back into current reasoning or behavior.
 
 ## Definition
 
@@ -72,6 +75,10 @@ Fixed retry-count rules must not be reintroduced through:
 
 If such a rule is discovered, classify it as **governance drift** and replace it with the current evidence-driven failure/replan policy.
 
+When the obsolete rule was historically valid and later re-enters current authority, classify the event under the broader **Temporal Authority Drift** control as a Deadwalker candidate or confirmed Deadwalker according to evidence and behavioral effect.
+
+See `../controls/temporal_authority_drift_control.md`.
+
 ## Detection smell
 
 Typical phrases include:
@@ -81,4 +88,4 @@ Typical phrases include:
 - counters that decrement on infrastructure or permission failures;
 - a safe-stop decision justified only by the number of prior executions.
 
-A retry counter may still be valid for operational rate limiting, API protection, or bounded mechanical retries. It must not masquerade as engineering reasoning or hypothesis governance.
+A retry counter may still be valid for operational rate limiting, API protection, transient infrastructure retries, or other bounded mechanical safeguards. It must not masquerade as engineering reasoning or hypothesis governance.
