@@ -1,8 +1,8 @@
 {
   "schema": "novi.game_ci_contract.v1",
-  "contract_version": "1.0.0",
+  "contract_version": "1.1.0",
   "family": "NOVI",
-  "purpose": "Prevent duplicate/stale game-development CI while preserving native Windows authority, cross-platform technical evidence, security posture, and deterministic governance.",
+  "purpose": "Prevent duplicate/stale game-development CI and cold-start waste while preserving native Windows authority, cross-platform technical evidence, security posture, deterministic governance and service-runner-safe local handoffs.",
   "workflow_classes": {
     "development-validation": {
       "required_triggers": ["pull_request", "workflow_dispatch"],
@@ -13,6 +13,10 @@
       "forbidden_triggers": ["push"]
     },
     "infrastructure-smoke": {
+      "required_triggers": ["workflow_dispatch"],
+      "forbidden_triggers": ["pull_request", "push"]
+    },
+    "clean-room-validation": {
       "required_triggers": ["workflow_dispatch"],
       "forbidden_triggers": ["pull_request", "push"]
     },
@@ -31,7 +35,34 @@
     "runner_smoke_on_every_code_change": "FORBIDDEN",
     "test_depth_may_not_be_reduced_to_improve_queue_latency": true,
     "alpha_handoff_may_not_install_unsigned_payload": true,
-    "security_protection_bypass_to_make_ci_pass": "FORBIDDEN"
+    "security_protection_bypass_to_make_ci_pass": "FORBIDDEN",
+    "service_runner_may_not_write_interactive_desktop_shell_integration": true,
+    "stable_interactive_prepare_root": "%PUBLIC%\\NOVI",
+    "stable_unsigned_handoff_root": "%PUBLIC%\\NOVI\\Handoffs",
+    "persistent_windows_runner_toolchain_root": "%PUBLIC%\\NOVI\\RunnerToolchain",
+    "cold_start_unchanged_toolchain_on_persistent_self_hosted_runner": "FORBIDDEN",
+    "automatic_clean_room_on_normal_pr": "FORBIDDEN",
+    "windows_runner_is_scarce_product_authority": true,
+    "platform_independent_checks_must_not_consume_windows_runner": true
   },
-  "adoption_rule": "Every NOVI-family game repository copies this contract and tools/ci/check_game_ci_contract.py. Every workflow declares '# novi-ci-class: <class>' and a normal validation workflow executes the checker. Future games extend project-specific jobs, not these invariants."
+  "toolchain_lifecycle": {
+    "normal_modes": ["HIT", "REPAIR", "REBUILD"],
+    "explicit_mode": "CLEAN_ROOM",
+    "rule": "Normal persistent self-hosted jobs validate desired toolchain state first. Exact valid state is reused; partial drift repairs only the affected component; version or integrity mismatch rebuilds that component. A clean room is explicit/manual rather than the default for every commit.",
+    "windows_ensure": "tools/runner/Ensure-NoviRunnerToolchain.ps1",
+    "linux_ensure": "tools/runner/ensure_novi_runner_toolchain.sh",
+    "shared_windows_engine_and_cache": "%PUBLIC%\\NOVI\\RunnerToolchain",
+    "runner_profile_views_may_be_repaired_from_shared_verified_state": true,
+    "concurrent_provisioning_requires_version_lock": true,
+    "atomic_component_replacement_required": true
+  },
+  "timeout_classes_minutes": {
+    "metadata_static": 10,
+    "linux_game_validation": 15,
+    "windows_product_authority": 30,
+    "explicit_clean_room": 45
+  },
+  "windows_authority_rule": "Use Windows only for behavior that actually requires Windows: native validation, Windows export/runtime behavior, Authenticode/trust boundaries or Windows alpha packaging. Repository identity, provenance and platform-independent static checks run on Linux. Prefer one Windows authority job per PR head and reuse one verified export for downstream Windows evidence.",
+  "handoff_rule": "Service runners may create validated unsigned payloads and prepare-command files only below %PUBLIC%\\NOVI. They must not assume write access to %PUBLIC%\\Desktop, a human user's Desktop, Start Menu, certificate store or per-user Programs directory. Signing, installation and user-shell integration occur only after control passes to the interactive user.",
+  "adoption_rule": "Every NOVI-family game repository copies this contract, tools/ci/check_game_ci_contract.py and the runner toolchain ensure scripts byte-for-byte. Future games extend project-specific tests, not these invariants."
 }

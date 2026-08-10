@@ -5,18 +5,66 @@ Applies when: a new game is intended to join the same local development/product 
 
 ## Principle
 
-A new game gets a new product repository and new game-specific tests, but it does **not** invent a new Windows trust identity, local filesystem convention, or CI queue policy.
+A new game gets a new product repository and game-specific tests, but it does **not** invent a new Windows trust identity, local filesystem convention, CI queue policy, runner lifecycle, timeout scheme or toolchain provisioning strategy.
+
+The normal development environment is persistent and verified. A fresh machine is an explicit clean-room evidence mode, not the default for every commit.
 
 ## Required project-start adoption
 
-Copy these two files from this CKGB profile into the new game repository:
+Copy these four retained family files into the new game repository:
 
-- `docs/governance/NOVI-GAME-CI-CONTRACT.json`
-- `tools/ci/check_game_ci_contract.py`
+- `docs/project-start/NOVI-GAME-CI-CONTRACT.json` -> `docs/governance/NOVI-GAME-CI-CONTRACT.json`
+- `docs/project-start/check_game_ci_contract.py` -> `tools/ci/check_game_ci_contract.py`
+- `docs/project-start/Ensure-NoviRunnerToolchain.ps1` -> `tools/runner/Ensure-NoviRunnerToolchain.ps1`
+- `docs/project-start/ensure_novi_runner_toolchain.sh` -> `tools/runner/ensure_novi_runner_toolchain.sh`
 
-Every GitHub Actions workflow in the game repository declares one of the contract workflow classes and an existing validation workflow executes the checker.
+The retained files are copied byte-for-byte. Every GitHub Actions workflow declares one contract workflow class and a normal validation workflow executes the checker.
 
-The project may add deeper or different game tests. It may not weaken the family invariants merely to reduce CI latency.
+The project may add deeper or different game tests. It may not weaken family invariants merely to reduce CI latency.
+
+## Persistent runner lifecycle
+
+Normal self-hosted development jobs use the lifecycle:
+
+1. `HIT` — requested engine/toolchain version and integrity already match; reuse it immediately.
+2. `REPAIR` — only a missing or drifted component is repaired.
+3. `REBUILD` — only a version/integrity-invalid component is rebuilt from verified source.
+4. `CLEAN_ROOM` — deliberately fresh environment, used only through an explicit/manual clean-room workflow.
+
+Do not erase or re-download an unchanged verified toolchain merely because a new commit arrived.
+
+The Windows family toolchain root is:
+
+- `%PUBLIC%\NOVI\RunnerToolchain`
+
+It holds shared verified engine/cache state. The provisioner may repair the active runner service profile's local Godot/template view from that shared state. Concurrent provisioning must be serialized per tool/version and component replacement must be atomic.
+
+Linux runners use the same lifecycle with a persistent runner-local cache/root.
+
+## Windows runner is scarce Product Authority
+
+Do not create Windows twins for platform-independent checks.
+
+Repository identity, provenance, governance/static policy and Linux game parity belong on Linux. Windows capacity is reserved for behavior that actually requires Windows, such as:
+
+- native Windows technical execution;
+- Windows export/runtime behavior;
+- offline endpoint probing of the Windows executable;
+- Authenticode/trust boundaries;
+- Windows alpha packaging/handoff.
+
+Prefer one Windows Product Authority job per PR head. Build a verified Windows export once and reuse that same export for downstream Windows evidence instead of rebuilding it in separate workflows.
+
+## Family timeout classes
+
+Use these defaults unless a documented workload-specific reason requires a stricter lower bound:
+
+- metadata/static: 10 minutes;
+- Linux game validation: 15 minutes;
+- Windows Product Authority: 30 minutes;
+- explicit clean room: 45 minutes.
+
+A timeout increase is not a substitute for fixing repeated cold-start work.
 
 ## Local Windows family layout
 
@@ -48,6 +96,7 @@ The runner must not receive or create the interactive developer private key. The
 - Feature-branch game validation runs through `pull_request` plus optional `workflow_dispatch`, not duplicate `push` + PR execution.
 - All recurring validation/handoff workflows use latest-head concurrency and `cancel-in-progress: true`.
 - Runner/infrastructure smoke checks are manual-only unless a separately bounded infrastructure incident explicitly requires otherwise.
+- Normal PRs do not run clean-room provisioning automatically.
 - GitHub Actions references use immutable commit SHAs.
 - Native Windows interactive play remains Product Authority; CI remains technical evidence.
 - Test/security/provenance depth may not be reduced just to shorten a queue.
@@ -55,7 +104,7 @@ The runner must not receive or create the interactive developer private key. The
 
 ## Re-entry requirement
 
-Every game repository's canonical engineering re-entry contract must list its copied `NOVI-GAME-CI-CONTRACT.json` as a required read and must record its current local-alpha paths and shared publisher authority. Current-state files must not retain superseded alpha/install paths.
+Every game repository's canonical engineering re-entry contract must list its copied `NOVI-GAME-CI-CONTRACT.json` and runner ensure scripts as required reads and must record the current toolchain lifecycle, timeout classes, local-alpha paths and shared publisher authority. Current-state files must not retain superseded alpha/install or cold-start runner assumptions.
 
 ## Adoption rule for future contract versions
 
