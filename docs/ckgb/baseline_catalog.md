@@ -53,4 +53,5 @@ Each item is selectable. CKGB is intentionally over-complete.
 | ISO/IEC 42001 mapping | Advanced / Conditional | AI management system language supports maturity explanation | AI governance project | No AI relevance |
 | Provider/API budget guard | Advanced / Conditional | Real provider calls cost money and need admission control | LLM/API usage | No external provider calls |
 | Lessons-learned loop | Recommended | CKGB must improve from real work | Repeated project family | One-off experiment |
+| NOVI-family game project baseline | Foundation for NOVI-family games | DOI/COTD exposed CI queue fan-out, signing drift and local-path fragmentation | Every new NOVI-family game repository | Non-game projects or games intentionally outside the NOVI family |
 | Non-selection record | Recommended | Skipped controls need reason and review trigger | Projects using CKGB | Tiny throwaway work |

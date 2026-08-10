@@ -1,0 +1,37 @@
+{
+  "schema": "novi.game_ci_contract.v1",
+  "contract_version": "1.0.0",
+  "family": "NOVI",
+  "purpose": "Prevent duplicate/stale game-development CI while preserving native Windows authority, cross-platform technical evidence, security posture, and deterministic governance.",
+  "workflow_classes": {
+    "development-validation": {
+      "required_triggers": ["pull_request", "workflow_dispatch"],
+      "forbidden_triggers": ["push"]
+    },
+    "alpha-handoff": {
+      "required_triggers": ["pull_request", "workflow_dispatch"],
+      "forbidden_triggers": ["push"]
+    },
+    "infrastructure-smoke": {
+      "required_triggers": ["workflow_dispatch"],
+      "forbidden_triggers": ["pull_request", "push"]
+    },
+    "post-merge": {
+      "required_triggers": ["push", "workflow_dispatch"],
+      "forbidden_push_patterns": ["**"]
+    }
+  },
+  "invariants": {
+    "feature_branch_push_validation": "FORBIDDEN",
+    "latest_pr_head_is_authoritative": true,
+    "concurrency_required": true,
+    "cancel_in_progress_required": true,
+    "canonical_concurrency_group": "${{ github.workflow }}-${{ github.event.pull_request.number || github.ref_name }}",
+    "mutable_action_major_tags_forbidden": true,
+    "runner_smoke_on_every_code_change": "FORBIDDEN",
+    "test_depth_may_not_be_reduced_to_improve_queue_latency": true,
+    "alpha_handoff_may_not_install_unsigned_payload": true,
+    "security_protection_bypass_to_make_ci_pass": "FORBIDDEN"
+  },
+  "adoption_rule": "Every NOVI-family game repository copies this contract and tools/ci/check_game_ci_contract.py. Every workflow declares '# novi-ci-class: <class>' and a normal validation workflow executes the checker. Future games extend project-specific jobs, not these invariants."
+}
