@@ -1,0 +1,40 @@
+name: CNGB RCC warm profile contract
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.rcc/runner-profiles/**'
+      - '.github/workflows/rcc-warm-profile-contract.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: [self-hosted, linux, x64, cngb-linux]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate repository-bound platform-only profile
+        shell: bash
+        run: |
+          set -euo pipefail
+          test '${{ github.repository_id }}' = '1276271604'
+          python3 - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          p = json.loads(Path('.rcc/runner-profiles/linux-wsl.json').read_text())
+          assert p['schema_version'] == 1
+          assert p['profile_id'] == 'cngb-linux-warm'
+          assert p['profile_version'] == 1
+          assert p['platform'] == 'linux-wsl'
+          assert p['runner_labels'] == ['cngb-linux']
+          assert p['requirements'] == []
+          canonical = b'{"schema_version":1,"profile_id":"cngb-linux-warm","profile_version":1,"platform":"linux-wsl","runner_labels":["cngb-linux"],"requirements":[]}'
+          expected = '05139a42c6105ef9153ebac4cc05fa7482acf11c36c6fb463684058f5e8e7311'
+          assert hashlib.sha256(canonical).hexdigest() == expected
+          assert p['profile_hash'] == expected
+          print('CNGB_PLATFORM_ONLY_WARM_PROFILE=PASS')
+          PY
