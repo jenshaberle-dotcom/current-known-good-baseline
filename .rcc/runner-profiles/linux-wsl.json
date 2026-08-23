@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "profile_id": "cngb-linux-warm",
+  "profile_version": 1,
+  "platform": "linux-wsl",
+  "runner_labels": [
+    "cngb-linux"
+  ],
+  "requirements": [],
+  "profile_hash": "05139a42c6105ef9153ebac4cc05fa7482acf11c36c6fb463684058f5e8e7311"
+}
