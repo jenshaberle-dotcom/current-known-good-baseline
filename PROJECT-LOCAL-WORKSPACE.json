@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "repository": "jenshaberle-dotcom/current-known-good-baseline",
+  "repository_id": 1276271604,
+  "canonical_branch": "main",
+  "canonical_checkout": {
+    "windows_path": "%USERPROFILE%\\repos\\current-known-good-baseline",
+    "wsl_path": "$HOME/projects/current-known-good-baseline",
+    "persistent_count": 1,
+    "must_track_canonical_branch": true
+  },
+  "temporary_workspaces": {
+    "windows_root": "%USERPROFILE%\\worktrees\\current-known-good-baseline",
+    "wsl_root": "$HOME/worktrees/current-known-good-baseline",
+    "lease_required": true
+  },
+  "prevention": {
+    "feature_work_on_canonical_checkout": "FORBIDDEN",
+    "duplicate_persistent_canonical": "CHECK",
+    "undeclared_workspace": "CHECK"
+  }
+}
