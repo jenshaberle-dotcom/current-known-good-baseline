@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "repository_id": 1276271604,
+  "repository": "jenshaberle-dotcom/current-known-good-baseline",
+  "project_key": "cngb",
+  "slots": [
+    {
+      "slot_id": "baseline-linux",
+      "capacity_kind": "SPECIALIZED",
+      "role": "baseline",
+      "platform": "linux-wsl",
+      "desired_count": 1,
+      "min_active": 0,
+      "max_active": 1,
+      "sleep_allowed": true,
+      "routing_labels": ["cngb-linux"],
+      "profile_id": "cngb-linux-warm",
+      "runtime_capabilities": ["known-good-baseline"]
+    }
+  ]
+}
