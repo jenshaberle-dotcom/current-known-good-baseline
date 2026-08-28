@@ -1,22 +1,41 @@
 {
-  "schema_version": 1,
-  "repository": "jenshaberle-dotcom/current-known-good-baseline",
+  "schema_version": "drj.project_local_workspace.v2",
   "repository_id": 1276271604,
+  "repository": "jenshaberle-dotcom/current-known-good-baseline",
   "canonical_branch": "main",
   "canonical_checkout": {
-    "windows_path": "%USERPROFILE%\\repos\\current-known-good-baseline",
-    "wsl_path": "$HOME/projects/current-known-good-baseline",
-    "persistent_count": 1,
-    "must_track_canonical_branch": true
+    "authority": "WSL_ONLY",
+    "path": "$HOME/projects/current-known-good-baseline",
+    "cardinality": "EXACTLY_ONE_PERSISTENT_ACTIVE",
+    "must_track_canonical_branch": true,
+    "duplicate_persistent_checkout": "CHECK"
   },
-  "temporary_workspaces": {
-    "windows_root": "%USERPROFILE%\\worktrees\\current-known-good-baseline",
-    "wsl_root": "$HOME/worktrees/current-known-good-baseline",
-    "lease_required": true
+  "project_workspaces": {
+    "root": "$HOME/worktrees/current-known-good-baseline",
+    "non_main_or_mutating_work_requires_declared_worktree": true,
+    "lease_required_for_integrated_creators": true,
+    "arbitrary_persistent_clone_outside_declared_roots": false
   },
-  "prevention": {
-    "feature_work_on_canonical_checkout": "FORBIDDEN",
-    "duplicate_persistent_canonical": "CHECK",
-    "undeclared_workspace": "CHECK"
-  }
+  "runner_workspaces": {
+    "authority": "EXECUTION_ONLY",
+    "canonical_eligible": false,
+    "project_work_eligible": false
+  },
+  "legacy_windows_checkout": {
+    "path": "%USERPROFILE%\\repos\\current-known-good-baseline",
+    "authority": "NONE",
+    "classification": "RETENTION_OR_RECONCILIATION_ONLY"
+  },
+  "scanner_scope": {
+    "normal": "BOUNDED_INDEPENDENT_DISCOVERY",
+    "declared_roots_are_hints_not_authority": true,
+    "classify_by_repository_identity_and_origin": true,
+    "runner_roots_in_scope": true
+  },
+  "fallback_local_execution": {
+    "ci_disturbance_allowed": true,
+    "main_only_read_or_test_may_use_canonical_checkout": true,
+    "non_main_or_mutating_work_requires_declared_worktree": true
+  },
+  "target_operating_model": "JANITOR_MONITOR_FIRST_EFFECT_EXCEPTION"
 }
