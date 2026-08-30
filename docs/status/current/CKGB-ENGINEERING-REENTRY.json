@@ -1,0 +1,51 @@
+{
+  "schema_version": "portfolio.project_reentry_projection.v1",
+  "checkpoint_kind": "safe_stop_projection",
+  "activation_authority": false,
+  "repository": {
+    "repository_id": 1276271604,
+    "full_name": "jenshaberle-dotcom/current-known-good-baseline",
+    "canonical_branch": "main"
+  },
+  "reentry_source_authority": {
+    "authoritative_ref": "refs/heads/main",
+    "main_only": true,
+    "branch_local_reentry_files_are_authoritative": false
+  },
+  "truth_order": [
+    "LIVE_REPOSITORY_EVIDENCE",
+    "CANONICAL_REPOSITORY_CONTRACTS",
+    "CURRENT_REENTRY",
+    "CKGB_DOCUMENTATION",
+    "CHAT_OR_MEMORY"
+  ],
+  "activity_state": "DORMANT",
+  "decision_mode": "execution",
+  "active_mutation": null,
+  "blockers": [],
+  "next_action": "NO_ACTIVE_PROJECT_SLICE__FRESHLY_REVALIDATE_CANONICAL_MAIN_AND_ACTIVATE_EXACTLY_ONE_BOUNDED_SLICE_BEFORE_IMPLEMENTATION",
+  "knowledge": {
+    "research_required": false,
+    "knowledge_state": "docs/knowledge/RESEARCH-STATE.md"
+  },
+  "required_reads": [
+    "PROJECT-REENTRY.json",
+    "PROJECT-HYGIENE.json",
+    "PROJECT-LOCAL-WORKSPACE.json",
+    "PROJECT-DRJ.json",
+    "docs/knowledge/RESEARCH-STATE.md",
+    "docs/ckgb/principles.md",
+    "docs/ckgb/baseline_catalog.md"
+  ],
+  "authority_boundaries": {
+    "this_projection_activates_work": false,
+    "drj_is_project_work_admission_authority": false,
+    "retention_or_reconciliation_state_alone_blocks_unrelated_work": false,
+    "destructive_cleanup_authorized": false,
+    "chat_or_memory_is_current_truth": false
+  },
+  "extensions": {
+    "principles": "docs/ckgb/principles.md",
+    "baseline_catalog": "docs/ckgb/baseline_catalog.md"
+  }
+}

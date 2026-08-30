@@ -1,0 +1,31 @@
+{
+  "schema": "portfolio.project_reentry.v1",
+  "repository": {
+    "repository_id": 1276271604,
+    "full_name": "jenshaberle-dotcom/current-known-good-baseline",
+    "canonical_branch": "main"
+  },
+  "authority": {
+    "authoritative_ref": "refs/heads/main",
+    "main_only": true,
+    "project_reentry": "docs/status/current/CKGB-ENGINEERING-REENTRY.json",
+    "projection_format": "json",
+    "projection_profile": "portfolio-minimal-v1"
+  },
+  "contracts": {
+    "hygiene": "PROJECT-HYGIENE.json",
+    "workspace": "PROJECT-LOCAL-WORKSPACE.json",
+    "drj": "PROJECT-DRJ.json",
+    "reconcile": "DRJ-RECONCILE-REQUEST.json",
+    "knowledge": "docs/knowledge/RESEARCH-STATE.md"
+  },
+  "shared_reentry": {
+    "owner": "jenshaberle-dotcom/Worker-based-agent-architecture",
+    "contract": "contracts/PORTFOLIO-PROJECT-REENTRY-v1.md",
+    "consumer_adapter": "ckgb"
+  },
+  "extensions": {
+    "baseline_catalog": "docs/ckgb/baseline_catalog.md",
+    "principles": "docs/ckgb/principles.md"
+  }
+}
