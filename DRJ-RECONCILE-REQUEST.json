@@ -1,8 +1,44 @@
 {
-  "schema_version": 1,
-  "request_state": "NO_REQUEST",
+  "schema_version": 2,
+  "request_state": "READY",
   "repository": "jenshaberle-dotcom/current-known-good-baseline",
   "repository_id": 1276271604,
-  "canonical_branch": "main",
-  "publisher": {"contract_version":1,"trigger":"REENTRY_HYGIENE_GATE","state":"IDLE_BASELINE"}
+  "observed_semantic_at": "2026-08-30T19:55:00Z",
+  "desired_state": {
+    "canonical_branch": "main",
+    "activity_state": "DORMANT",
+    "reentry_authority": "docs/status/current/CKGB-ENGINEERING-REENTRY.json",
+    "open_pr_heads": "PROTECTED_BY_LIVE_GITHUB_PR_STATE",
+    "persistent_refs": ["main"],
+    "remote_non_main_default": "REVIEW_UNLESS_EXPLICITLY_ACTIVE_PERSISTENT_OR_DECIDED_CANDIDATE",
+    "cleanup_executor": "DRJ_DOMAIN_JANITOR_ONLY"
+  },
+  "candidates": [
+    {
+      "target_type": "REMOTE_BRANCH",
+      "identity": "agent/portfolio-foundations-align-v1",
+      "semantic_disposition": "SUPERSEDED",
+      "reason": "Portfolio foundation alignment was merged by PR #11; this remote head is post-merge residue, not current CKGB authority.",
+      "evidence_refs": ["PR #11", "PROJECT-REENTRY.json", "docs/status/current/CKGB-ENGINEERING-REENTRY.json"]
+    }
+  ],
+  "unresolved": [
+    {
+      "target_type": "REMOTE_BRANCH",
+      "identity": "scope:remote-non-main-branches",
+      "state": "REVIEW",
+      "reason": "CKGB is dormant, but live PR #4 and historical non-main refs remain protected until differentiated project review proves their semantic disposition and unique-value state.",
+      "evidence_refs": ["docs/status/current/CKGB-ENGINEERING-REENTRY.json", "PROJECT-HYGIENE.json", "live GitHub PR #4 and branch inventory"],
+      "resolution_requires": ["complete DRJ remote branch inventory", "protect live open PR heads", "project semantic cohort classification", "closed-unmerged and unique-value review before exact retire candidates"]
+    },
+    {
+      "target_type": "LOCAL_WORKTREE",
+      "identity": "scope:canonical-host-worktrees",
+      "state": "UNKNOWN",
+      "reason": "Remote GitHub truth cannot prove the current WSL checkout/worktree, dirty, unpushed or divergent state while the operator host is unavailable.",
+      "evidence_refs": ["PROJECT-LOCAL-WORKSPACE.json", "docs/status/current/CKGB-ENGINEERING-REENTRY.json"],
+      "resolution_requires": ["read-only portfolio host/worktree preflight"]
+    }
+  ],
+  "publisher": {"contract_version": 2, "trigger": "REENTRY_HYGIENE_GATE", "state": "FRESH_PROJECT_STATE_2026_08_30"}
 }
