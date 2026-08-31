@@ -3,6 +3,16 @@
   "repository_id": 1276271604,
   "repository": "jenshaberle-dotcom/current-known-good-baseline",
   "project_key": "cngb",
+  "fallback_policy": {
+    "strategy": "WARM_PREFERRED_GITHUB_HOSTED",
+    "provider": "GITHUB_HOSTED_STANDARD",
+    "billing_class": "PUBLIC_STANDARD_FREE",
+    "monthly_minutes_budget": null,
+    "heartbeat_workflow": "warm-runner-heartbeat.yml",
+    "heartbeat_max_age_seconds": 900,
+    "portable_workloads_only": true,
+    "required_workflow_opt_in": true
+  },
   "slots": [
     {
       "slot_id": "baseline-linux",
