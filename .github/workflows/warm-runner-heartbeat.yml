@@ -1,0 +1,17 @@
+name: Warm runner heartbeat
+on:
+  schedule:
+    - cron: '1-56/5 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: cngb-warm-runner-heartbeat
+  cancel-in-progress: true
+jobs:
+  heartbeat:
+    runs-on: [self-hosted, cngb-linux]
+    timeout-minutes: 2
+    steps:
+      - shell: bash
+        run: echo "WARM_HEARTBEAT=PASS runner=${RUNNER_NAME} at=$(date -u +%Y-%m-%dT%H:%M:%SZ)"

@@ -5,17 +5,39 @@ on:
     branches: [main]
     paths:
       - '.rcc/runner-profiles/**'
+      - '.rcc/runner-contract.json'
       - '.github/workflows/rcc-warm-profile-contract.yml'
+      - '.github/workflows/warm-runner-route.yml'
+      - '.github/workflows/warm-runner-heartbeat.yml'
   workflow_dispatch:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
+  route:
+    name: Resolve execution surface
+    uses: ./.github/workflows/warm-runner-route.yml
+    with:
+      heartbeat_workflow: warm-runner-heartbeat.yml
+      heartbeat_max_age_seconds: 900
+      warm_runs_on_json: '["self-hosted","linux","x64","cngb-linux"]'
+      hosted_runs_on_json: '["ubuntu-latest"]'
+
   qualify:
-    runs-on: [self-hosted, linux, x64, cngb-linux]
+    needs: route
+    runs-on: ${{ fromJSON(needs.route.outputs.runs_on_json) }}
     timeout-minutes: 10
+    env:
+      CNGB_EXECUTION_ROUTE: ${{ needs.route.outputs.route }}
+      CNGB_ROUTE_REASON: ${{ needs.route.outputs.reason }}
     steps:
+      - name: Show selected execution surface
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "CNGB_EXECUTION_ROUTE=${CNGB_EXECUTION_ROUTE} reason=${CNGB_ROUTE_REASON} runner=${RUNNER_NAME}"
       - uses: actions/checkout@v4
       - name: Validate repository-bound platform-only profile
         shell: bash
