@@ -23,6 +23,9 @@ Each item is selectable. CKGB is intentionally over-complete.
 | Item | Activation | Origin lesson | Selection criteria | Non-selection criteria |
 |---|---|---|---|---|
 | Repo is truth | Foundation | Chat and file handovers drifted; repository state must decide | Always | Never for serious project work |
+| Session-independent re-entry | Recommended | Interrupted sessions and delayed external work make blind replay unsafe | Multi-session, agent-assisted, autonomous or interruption-prone work | Tiny human-only toy work |
+| Evidence-driven failure classification | Foundation | Fixed attempt counts caused premature stops while unchanged retries created disguised loops | Automation, AI-assisted engineering or iterative repair | Static documentation only |
+| Deadwalker quarantine / authority freshness | Recommended | Historically valid authority can be superseded while a run/effect is still in flight and later regain current influence | Long-lived, evolving-authority, agent-assisted or CI-driven systems | Short-lived work with no changing authority or delayed effects |
 | Ruff before first feature code | Foundation | Retrofitted linting is expensive | Python project | Non-Python project with equivalent lint |
 | Pytest baseline | Foundation | Validation must be executable | Python project | Non-Python project with equivalent tests |
 | Secret scanning | Foundation | Secret leakage is high-impact and cheap to detect | Repo with config, keys or external calls | No secrets possible and private toy repo |
