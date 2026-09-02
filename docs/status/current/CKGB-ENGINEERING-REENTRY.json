@@ -2,66 +2,18 @@
   "schema_version": "portfolio.project_reentry_projection.v1",
   "checkpoint_kind": "safe_stop_projection",
   "activation_authority": false,
-  "repository": {
-    "repository_id": 1276271604,
-    "full_name": "jenshaberle-dotcom/current-known-good-baseline",
-    "canonical_branch": "main"
-  },
-  "reentry_source_authority": {
-    "authoritative_ref": "refs/heads/main",
-    "main_only": true,
-    "branch_local_reentry_files_are_authoritative": false
-  },
-  "truth_order": [
-    "LIVE_REPOSITORY_EVIDENCE",
-    "CANONICAL_REPOSITORY_CONTRACTS",
-    "CURRENT_REENTRY",
-    "CKGB_DOCUMENTATION",
-    "CHAT_OR_MEMORY"
-  ],
-  "activity_state": "DORMANT",
+  "repository": {"repository_id":1276271604,"full_name":"jenshaberle-dotcom/current-known-good-baseline","canonical_branch":"main"},
+  "reentry_source_authority": {"authoritative_ref":"refs/heads/main","main_only":true,"branch_local_reentry_files_are_authoritative":false},
+  "truth_order": ["LIVE_REPOSITORY_EVIDENCE","CANONICAL_REPOSITORY_CONTRACTS","CURRENT_REENTRY","CKGB_DOCUMENTATION","CHAT_OR_MEMORY"],
+  "activity_state": "DORMANT_POST_MIGRATION_HYGIENE_COMPLETE",
   "decision_mode": "execution",
   "active_mutation": null,
-  "blockers": ["POST_MIGRATION_FINAL_LOCAL_RETIRE_AND_REINSPECTION_PENDING"],
-  "next_action": "FINALIZE_EXACT_LOCAL_PR4_WORKTREE_AND_BRANCH_RETIRE_AFTER_CLEAN_HEAD_PROOF__THEN_FINAL_READ_ONLY_REINSPECTION_AND_MAILBOX_REPUBLICATION",
-  "knowledge": {
-    "research_required": false,
-    "knowledge_state": "docs/knowledge/RESEARCH-STATE.md"
-  },
-  "required_reads": [
-    "PROJECT-REENTRY.json",
-    "PROJECT-HYGIENE.json",
-    "PROJECT-LOCAL-WORKSPACE.json",
-    "PROJECT-DRJ.json",
-    "POST-MIGRATION-RESTART.json",
-    "DRJ-RECONCILE-REQUEST.json",
-    "docs/knowledge/RESEARCH-STATE.md",
-    "docs/ckgb/principles.md",
-    "docs/ckgb/baseline_catalog.md",
-    "docs/controls/deadwalker_quarantine_protocol.md",
-    "docs/governance/reentry_and_failure_replan.md"
-  ],
-  "harvest_state": {
-    "legacy_source_pr": 4,
-    "legacy_source_branch": "agent/ckgb-deadwalker-quarantine-001b",
-    "source_head": "dc638b76c6dd1d8cee02c646cea039fe5503a7f2",
-    "semantic_harvest": "COMPLETE_VIA_PR16",
-    "canonical_merge": "89e254694ebb8485ab46c3aab1a6b51db278c575",
-    "source_ancestry_is_continuation_authority": false,
-    "closed_pr2_historical_evidence_preserved": true
-  },
-  "authority_boundaries": {
-    "this_projection_activates_work": false,
-    "drj_is_project_work_admission_authority": false,
-    "retention_or_reconciliation_state_alone_blocks_unrelated_work": false,
-    "destructive_cleanup_authorized": false,
-    "chat_or_memory_is_current_truth": false,
-    "only_exact_proven_local_retirement_is_allowed_during_restart_gate": true
-  },
-  "extensions": {
-    "principles": "docs/ckgb/principles.md",
-    "baseline_catalog": "docs/ckgb/baseline_catalog.md",
-    "deadwalker_quarantine": "docs/controls/deadwalker_quarantine_protocol.md",
-    "reentry_failure_replan": "docs/governance/reentry_and_failure_replan.md"
-  }
+  "blockers": [],
+  "next_action": "NO_ACTIVE_PROJECT_SLICE__WAIT_FOR_PORTFOLIO_LEVEL_RESTART_AND_FRESHLY_REVALIDATE_CANONICAL_MAIN_BEFORE_ANY_NEW_IMPLEMENTATION",
+  "knowledge": {"research_required":false,"knowledge_state":"docs/knowledge/RESEARCH-STATE.md"},
+  "required_reads": ["PROJECT-REENTRY.json","PROJECT-HYGIENE.json","PROJECT-LOCAL-WORKSPACE.json","PROJECT-DRJ.json","POST-MIGRATION-RESTART.json","DRJ-RECONCILE-REQUEST.json","docs/knowledge/RESEARCH-STATE.md","docs/ckgb/principles.md","docs/ckgb/baseline_catalog.md","docs/controls/deadwalker_quarantine_protocol.md","docs/governance/reentry_and_failure_replan.md"],
+  "harvest_state": {"legacy_source_pr":4,"legacy_source_branch":"agent/ckgb-deadwalker-quarantine-001b","source_head":"dc638b76c6dd1d8cee02c646cea039fe5503a7f2","semantic_harvest":"COMPLETE_VIA_PR16","canonical_merge":"89e254694ebb8485ab46c3aab1a6b51db278c575","local_source_retired":true,"final_read_only_reinspection":"PASS","source_ancestry_is_continuation_authority":false,"closed_pr2_historical_evidence_preserved":true},
+  "workspace_state": {"restart_gate":"PASS","matched_checkout_count":1,"duplicate_persistent_count":0,"non_main_worktree_count":0,"unsafe_worktree_count":0,"harvest_required_branch_count":0,"problematic_branch_count":0},
+  "authority_boundaries": {"this_projection_activates_work":false,"drj_is_project_work_admission_authority":false,"retention_or_reconciliation_state_alone_blocks_unrelated_work":false,"destructive_cleanup_authorized":false,"chat_or_memory_is_current_truth":false},
+  "extensions": {"principles":"docs/ckgb/principles.md","baseline_catalog":"docs/ckgb/baseline_catalog.md","deadwalker_quarantine":"docs/controls/deadwalker_quarantine_protocol.md","reentry_failure_replan":"docs/governance/reentry_and_failure_replan.md"}
 }
