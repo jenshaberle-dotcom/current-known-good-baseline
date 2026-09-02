@@ -3,42 +3,56 @@
   "request_state": "READY",
   "repository": "jenshaberle-dotcom/current-known-good-baseline",
   "repository_id": 1276271604,
-  "observed_semantic_at": "2026-08-30T19:55:00Z",
+  "observed_semantic_at": "2026-09-02T19:18:00Z",
   "desired_state": {
     "canonical_branch": "main",
-    "activity_state": "DORMANT",
-    "reentry_authority": "docs/status/current/CKGB-ENGINEERING-REENTRY.json",
-    "open_pr_heads": "PROTECTED_BY_LIVE_GITHUB_PR_STATE",
+    "canonical_main_sha_at_observation": "89e254694ebb8485ab46c3aab1a6b51db278c575",
+    "activity_state": "DORMANT_POST_HARVEST_LOCAL_RETIRE_PENDING",
+    "reentry_authority": "docs/status/current/CKGB-ENGINEERING-REENTRY.json@refs/heads/main",
     "persistent_refs": ["main"],
-    "remote_non_main_default": "REVIEW_UNLESS_EXPLICITLY_ACTIVE_PERSISTENT_OR_DECIDED_CANDIDATE",
-    "cleanup_executor": "DRJ_DOMAIN_JANITOR_ONLY"
+    "open_pr_heads": "PROTECTED_BY_LIVE_GITHUB_PR_STATE",
+    "remote_non_main_default": "REVIEW_UNLESS_EXPLICITLY_PRESERVED_OR_EXACTLY_DECIDED",
+    "cleanup_executor": "DRJ_DOMAIN_JANITOR_ONLY",
+    "project_request_grants_effect_authority": false,
+    "harvest_receipt": "PR #4 unique semantic value -> ancestry-clean PR #16 -> main@89e254694ebb8485ab46c3aab1a6b51db278c575"
+  },
+  "candidate_policy": {
+    "semantic_disposition": "RETIRE",
+    "effect_rule": "CENTRAL_DRJ_MUST_REVALIDATE_EXACT_REF_SHA_OPEN_PR_STATE_AND_CURRENT_UNIQUE_VALUE_BEFORE_EFFECT",
+    "project_hygiene_decision_is_effect_authority": false
   },
   "candidates": [
-    {
-      "target_type": "REMOTE_BRANCH",
-      "identity": "agent/portfolio-foundations-align-v1",
-      "semantic_disposition": "SUPERSEDED",
-      "reason": "Portfolio foundation alignment was merged by PR #11; this remote head is post-merge residue, not current CKGB authority.",
-      "evidence_refs": ["PR #11", "PROJECT-REENTRY.json", "docs/status/current/CKGB-ENGINEERING-REENTRY.json"]
-    }
+    {"target_type":"REMOTE_BRANCH","identity":"agent/ckgb-deadwalker-quarantine-001b","expected_sha":"dc638b76c6dd1d8cee02c646cea039fe5503a7f2","semantic_disposition":"RETIRE","reason":"Draft PR #4 is closed and its still-valid semantic value was harvested ancestry-clean through PR #16; stale source ancestry has no remaining unique semantic value."},
+    {"target_type":"REMOTE_BRANCH","identity":"agent/knowledge-research-layer-v1","expected_sha":"5b28a7e681e1aa2f3ce57def780175552f6cdf71","semantic_disposition":"RETIRE","reason":"Merged PR #9 residue; canonical value is on main."},
+    {"target_type":"REMOTE_BRANCH","identity":"agent/portfolio-foundations-align-v1","expected_sha":"3684b148fbbf29e528739fee471baae65c770365","semantic_disposition":"RETIRE","reason":"Merged PR #11 residue; canonical value is on main."},
+    {"target_type":"REMOTE_BRANCH","identity":"agent/portfolio-reentry-v1","expected_sha":"d19ad96f71812fbfae3a6d3f1f7bc9573a6933c3","semantic_disposition":"RETIRE","reason":"Merged PR #10 residue; canonical value is on main."},
+    {"target_type":"REMOTE_BRANCH","identity":"agent/post-migration-restart-gate-v1","expected_sha":"f757a060079f0687fe3762634eafbb58f8c78dbe","semantic_disposition":"RETIRE","reason":"Merged PR #13 residue; canonical restart contract is on main."},
+    {"target_type":"REMOTE_BRANCH","identity":"agent/project-state-reconcile-v2","expected_sha":"82a8efb18ed11794e0424af0618efd60ed1b3e97","semantic_disposition":"RETIRE","reason":"Merged PR #12 residue; mailbox-v2/project-state value is on main."},
+    {"target_type":"REMOTE_BRANCH","identity":"agent/rcc-cngb-platform-only-warm-profile-001a","expected_sha":"c913bb273b2df4b7893fb6e83267f85f12570c32","semantic_disposition":"RETIRE","reason":"Merged PR #5 residue; canonical warm profile is on main."},
+    {"target_type":"REMOTE_BRANCH","identity":"agent/warm-hosted-fallback-001a","expected_sha":"87a54997e0426676f929cee62ed53d67c4d7c139","semantic_disposition":"RETIRE","reason":"Merged PR #15 residue; canonical warm-first/public-hosted fallback is on main."},
+    {"target_type":"REMOTE_BRANCH","identity":"drj/workspace-v2-wsl-canonical","expected_sha":"40cf703d04af7292e96a2238f1a48cf0ca319252","semantic_disposition":"RETIRE","reason":"Merged PR #8 residue; WSL-only workspace-v2 contract is on main."},
+    {"target_type":"REMOTE_BRANCH","identity":"drj-013-work-admission-001a","expected_sha":"4e6ddf9a03752bd003292afc989a5ee7db470cad","semantic_disposition":"RETIRE","reason":"Merged PR #7 residue; DRJ-v3 non-blocking work-admission invariant is on main."},
+    {"target_type":"REMOTE_BRANCH","identity":"ops/rcc-runner-contract-v1","expected_sha":"d0e63b1837c3e4aee9dac5644cf8e0249dc2d100","semantic_disposition":"RETIRE","reason":"Merged PR #6 residue; canonical runner capacity contract is on main."},
+    {"target_type":"REMOTE_BRANCH","identity":"agent/ckgb-deadwalker-harvest-001a","expected_sha":"37b1db17201df9a545d98c2ab2b4415c12a5bae2","semantic_disposition":"RETIRE","reason":"Merged PR #16 delivery residue after ancestry-clean semantic harvest."}
+  ],
+  "preserve_or_review": [
+    {"target_type":"REMOTE_BRANCH","identity":"agent/ckgb-reentry-failure-antipatterns-001a","expected_sha":"aecf6afa09345e99b99de4c368bd3f92014a310a","semantic_disposition":"PRESERVE_HISTORICAL_EVIDENCE","evidence":"Closed unmerged PR #2 is explicitly QUARANTINED_HISTORICAL_EVIDENCE_ONLY and must not regain current authority."},
+    {"target_type":"REMOTE_BRANCH","identity":"agent/ckgb-post-harvest-hygiene-001a","semantic_disposition":"PRESERVE_ACTIVE_CURRENT_HYGIENE_CARRIER_UNTIL_MERGED","evidence":"Current post-harvest hygiene carrier; not predeclared delete authority."}
   ],
   "unresolved": [
     {
-      "target_type": "REMOTE_BRANCH",
-      "identity": "scope:remote-non-main-branches",
-      "state": "REVIEW",
-      "reason": "CKGB is dormant, but live PR #4 and historical non-main refs remain protected until differentiated project review proves their semantic disposition and unique-value state.",
-      "evidence_refs": ["docs/status/current/CKGB-ENGINEERING-REENTRY.json", "PROJECT-HYGIENE.json", "live GitHub PR #4 and branch inventory"],
-      "resolution_requires": ["complete DRJ remote branch inventory", "protect live open PR heads", "project semantic cohort classification", "closed-unmerged and unique-value review before exact retire candidates"]
-    },
-    {
       "target_type": "LOCAL_WORKTREE",
       "identity": "scope:canonical-host-worktrees",
-      "state": "UNKNOWN",
-      "reason": "Remote GitHub truth cannot prove the current WSL checkout/worktree, dirty, unpushed or divergent state while the operator host is unavailable.",
-      "evidence_refs": ["PROJECT-LOCAL-WORKSPACE.json", "docs/status/current/CKGB-ENGINEERING-REENTRY.json"],
-      "resolution_requires": ["read-only portfolio host/worktree preflight"]
+      "state": "FINAL_RETIRE_AND_REINSPECTION_PENDING",
+      "reason": "Portfolio preflight observed exactly one CKGB non-main project worktree and one local branch with unique commit ancestry. PR #4 semantic value is now harvested through PR #16, but the exact local worktree path/head must still be revalidated before bounded local retirement.",
+      "evidence_refs": ["portfolio local restart preflight 2026-09-02T19:04:35Z", "PR #4 harvest receipt", "PR #16 merge 89e254694ebb8485ab46c3aab1a6b51db278c575"],
+      "resolution_requires": ["resolve exact local worktree attached to agent/ckgb-deadwalker-quarantine-001b", "require clean worktree and exact head dc638b76c6dd1d8cee02c646cea039fe5503a7f2", "retire only that worktree and local branch", "refresh canonical main to current origin/main", "run final read-only CKGB reinspection"]
     }
   ],
-  "publisher": {"contract_version": 2, "trigger": "REENTRY_HYGIENE_GATE", "state": "FRESH_PROJECT_STATE_2026_08_30"}
+  "publisher": {
+    "contract_version": 2,
+    "trigger": "POST_HARVEST_HYGIENE_GATE",
+    "state": "REMOTE_SEMANTIC_REVIEW_COMPLETE_LOCAL_FINALIZATION_PENDING_2026_09_02",
+    "remote_effect_authority_granted": false
+  }
 }
