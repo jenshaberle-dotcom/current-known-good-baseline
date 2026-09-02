@@ -22,8 +22,8 @@
   "activity_state": "DORMANT",
   "decision_mode": "execution",
   "active_mutation": null,
-  "blockers": [],
-  "next_action": "NO_ACTIVE_PROJECT_SLICE__FRESHLY_REVALIDATE_CANONICAL_MAIN_AND_ACTIVATE_EXACTLY_ONE_BOUNDED_SLICE_BEFORE_IMPLEMENTATION",
+  "blockers": ["POST_MIGRATION_FINAL_LOCAL_RETIRE_AND_REINSPECTION_PENDING"],
+  "next_action": "FINALIZE_EXACT_LOCAL_PR4_WORKTREE_AND_BRANCH_RETIRE_AFTER_CLEAN_HEAD_PROOF__THEN_FINAL_READ_ONLY_REINSPECTION_AND_MAILBOX_REPUBLICATION",
   "knowledge": {
     "research_required": false,
     "knowledge_state": "docs/knowledge/RESEARCH-STATE.md"
@@ -33,19 +33,35 @@
     "PROJECT-HYGIENE.json",
     "PROJECT-LOCAL-WORKSPACE.json",
     "PROJECT-DRJ.json",
+    "POST-MIGRATION-RESTART.json",
+    "DRJ-RECONCILE-REQUEST.json",
     "docs/knowledge/RESEARCH-STATE.md",
     "docs/ckgb/principles.md",
-    "docs/ckgb/baseline_catalog.md"
+    "docs/ckgb/baseline_catalog.md",
+    "docs/controls/deadwalker_quarantine_protocol.md",
+    "docs/governance/reentry_and_failure_replan.md"
   ],
+  "harvest_state": {
+    "legacy_source_pr": 4,
+    "legacy_source_branch": "agent/ckgb-deadwalker-quarantine-001b",
+    "source_head": "dc638b76c6dd1d8cee02c646cea039fe5503a7f2",
+    "semantic_harvest": "COMPLETE_VIA_PR16",
+    "canonical_merge": "89e254694ebb8485ab46c3aab1a6b51db278c575",
+    "source_ancestry_is_continuation_authority": false,
+    "closed_pr2_historical_evidence_preserved": true
+  },
   "authority_boundaries": {
     "this_projection_activates_work": false,
     "drj_is_project_work_admission_authority": false,
     "retention_or_reconciliation_state_alone_blocks_unrelated_work": false,
     "destructive_cleanup_authorized": false,
-    "chat_or_memory_is_current_truth": false
+    "chat_or_memory_is_current_truth": false,
+    "only_exact_proven_local_retirement_is_allowed_during_restart_gate": true
   },
   "extensions": {
     "principles": "docs/ckgb/principles.md",
-    "baseline_catalog": "docs/ckgb/baseline_catalog.md"
+    "baseline_catalog": "docs/ckgb/baseline_catalog.md",
+    "deadwalker_quarantine": "docs/controls/deadwalker_quarantine_protocol.md",
+    "reentry_failure_replan": "docs/governance/reentry_and_failure_replan.md"
   }
 }
