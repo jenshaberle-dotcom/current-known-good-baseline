@@ -1,0 +1,28 @@
+name: RCC assignment proof
+run-name: RCC assignment proof ${{ inputs.proof_label }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      routing_label:
+        description: Preserved project routing label
+        required: true
+        type: string
+      proof_label:
+        description: Ephemeral exact-runner proof label
+        required: true
+        type: string
+
+permissions: {}
+
+jobs:
+  assignment-proof:
+    if: ${{ startsWith(inputs.proof_label, 'rcc-assignment-proof-') }}
+    runs-on:
+      - self-hosted
+      - ${{ inputs.routing_label }}
+      - ${{ inputs.proof_label }}
+    timeout-minutes: 5
+    steps:
+      - name: Prove scheduler assignment only
+        run: echo "RCC_ASSIGNMENT_PROOF=PASS routing=${{ inputs.routing_label }} proof=${{ inputs.proof_label }}"
