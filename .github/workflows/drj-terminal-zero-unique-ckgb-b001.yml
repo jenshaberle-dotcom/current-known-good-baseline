@@ -1,4 +1,4 @@
-name: DRJ CKGB Fresh Terminal Preflight
+name: DRJ CKGB Narrowed ZERO_UNIQUE Effect
 
 on:
   pull_request:
@@ -6,12 +6,16 @@ on:
     paths:
       - .github/workflows/drj-terminal-zero-unique-ckgb-b001.yml
 
+concurrency:
+  group: drj-terminal-zero-unique-ckgb-b001a
+  cancel-in-progress: false
+
 permissions:
-  contents: read
+  contents: write
   pull-requests: read
 
 jobs:
-  observe:
+  apply:
     if: >-
       github.event.pull_request.head.ref == 'drj/76-terminal-zero-unique-ckgb-b001' &&
       github.event.pull_request.base.ref == 'main' &&
@@ -22,13 +26,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Fresh read-only preflight for legacy terminal set
+      - name: Exact narrowed CKGB preflight and effect
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           python - <<'PY'
-          import json, os
+          from datetime import UTC, datetime
+          import json, os, time
           from pathlib import Path
           from urllib.error import HTTPError
           from urllib.parse import quote, urlencode
@@ -37,108 +42,156 @@ jobs:
           REPOSITORY = "jenshaberle-dotcom/current-known-good-baseline"
           REPOSITORY_ID = 1276271604
           EXPECTED_MAIN = "2834c2e3a1c21ba03a46a7c929447f636aaae387"
+          AUTHORITY_REFERENCE = "github-issue-comment:jenshaberle-dotcom/Data-Retention-Janitor#76:5579673533"
+          ISSUED_AT = datetime.fromisoformat("2026-09-08T05:15:00+00:00")
+          EXPIRES_AT = datetime.fromisoformat("2026-09-08T06:00:00+00:00")
+          PREFLIGHT_RUN = 34190006542
           TARGETS = [
-            ("agent/ckgb-deadwalker-quarantine-001b","dc638b76c6dd1d8cee02c646cea039fe5503a7f2"),
-            ("agent/knowledge-research-layer-v1","5b28a7e681e1aa2f3ce57def780175552f6cdf71"),
-            ("agent/portfolio-foundations-align-v1","3684b148fbbf29e528739fee471baae65c770365"),
-            ("agent/portfolio-reentry-v1","d19ad96f71812fbfae3a6d3f1f7bc9573a6933c3"),
-            ("agent/post-migration-restart-gate-v1","f757a060079f0687fe3762634eafbb58f8c78dbe"),
-            ("agent/project-state-reconcile-v2","82a8efb18ed11794e0424af0618efd60ed1b3e97"),
             ("agent/rcc-cngb-platform-only-warm-profile-001a","c913bb273b2df4b7893fb6e83267f85f12570c32"),
-            ("agent/warm-hosted-fallback-001a","87a54997e0426676f929cee62ed53d67c4d7c139"),
-            ("drj/workspace-v2-wsl-canonical","40cf703d04af7292e96a2238f1a48cf0ca319252"),
-            ("drj-013-work-admission-001a","4e6ddf9a03752bd003292afc989a5ee7db470cad"),
-            ("ops/rcc-runner-contract-v1","d0e63b1837c3e4aee9dac5644cf8e0249dc2d100"),
             ("agent/ckgb-deadwalker-harvest-001a","37b1db17201df9a545d98c2ab2b4415c12a5bae2"),
             ("agent/ckgb-post-harvest-hygiene-001a","8680987a57ae0e1c47354fbb9306aa938ae2f9fa"),
           ]
-          PRESERVE = [
+          EXPLICITLY_EXCLUDED = {
             "agent/ckgb-reentry-failure-antipatterns-001a",
             "agent/ckgb-final-hygiene-pass-001a",
-          ]
+            "agent/ckgb-deadwalker-quarantine-001b",
+            "agent/knowledge-research-layer-v1",
+            "agent/portfolio-foundations-align-v1",
+            "agent/portfolio-reentry-v1",
+            "agent/post-migration-restart-gate-v1",
+            "agent/project-state-reconcile-v2",
+            "agent/warm-hosted-fallback-001a",
+            "drj/workspace-v2-wsl-canonical",
+            "drj-013-work-admission-001a",
+            "ops/rcc-runner-contract-v1",
+          }
+
+          if os.environ.get("GITHUB_REPOSITORY") != REPOSITORY:
+            raise SystemExit("repository transport mismatch")
+          now = datetime.now(UTC)
+          if not (ISSUED_AT <= now <= EXPIRES_AT):
+            raise SystemExit(f"OWNER authority expired/not-yet-valid: {now.isoformat()}")
+          if len(TARGETS) != 3 or len({b for b,_ in TARGETS}) != 3:
+            raise SystemExit("invalid narrowed exact target set")
+          if any(b in EXPLICITLY_EXCLUDED for b,_ in TARGETS):
+            raise SystemExit("excluded ref leaked into target set")
+
           token = os.environ["GH_TOKEN"]
           root = f"https://api.github.com/repos/{REPOSITORY}"
-          out = Path("/tmp/drj-ckgb-fresh-preflight.json")
+          out = Path("/tmp/drj-ckgb-b001a-effect.json")
+          receipt = {
+            "schema_version":"drj.ephemeral_target_repo_effect_receipt.v1",
+            "repository":REPOSITORY,
+            "repository_id":REPOSITORY_ID,
+            "authority_reference":AUTHORITY_REFERENCE,
+            "fresh_preflight_run":PREFLIGHT_RUN,
+            "expected_main":EXPECTED_MAIN,
+            "targets":[{"branch":b,"expected_sha":s} for b,s in TARGETS],
+            "preflight":[],
+            "effects":[],
+            "already_absent":[],
+            "state":"STARTED",
+          }
 
-          def api(path, allow_404=False):
-            req = Request(root + path, headers={
+          def persist():
+            out.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+          def api(method, path, allow_404=False):
+            req = Request(root + path, method=method, headers={
               "Accept":"application/vnd.github+json",
               "Authorization":f"Bearer {token}",
               "X-GitHub-Api-Version":"2022-11-28",
-              "User-Agent":"drj-ckgb-fresh-terminal-preflight",
+              "User-Agent":"drj-ckgb-narrowed-zero-unique-b001a",
             })
             try:
               with urlopen(req, timeout=30) as r:
-                return json.loads(r.read())
+                raw = r.read()
+                return json.loads(raw) if raw else None
             except HTTPError as exc:
               if allow_404 and exc.code == 404:
                 return None
-              raise
+              raise RuntimeError(f"GitHub API {method} {path} failed: {exc.code} {exc.read().decode('utf-8', errors='replace')}") from exc
 
-          repo = api("")
-          main = str((api("/git/ref/heads/main").get("object") or {}).get("sha") or "")
-          if int(repo["id"]) != REPOSITORY_ID or str(repo["default_branch"]) != "main":
-            raise SystemExit("repository identity/default mismatch")
-          if main != EXPECTED_MAIN:
-            raise SystemExit(f"canonical CKGB main moved: {main}")
+          def main_sha():
+            return str((api("GET", "/git/ref/heads/main").get("object") or {}).get("sha") or "")
 
-          owner = REPOSITORY.split('/', 1)[0]
-          rows = []
-          for branch, expected in TARGETS:
-            row = {"branch":branch,"expected_sha":expected}
-            ref = api(f"/git/ref/heads/{quote(branch, safe='/')}", allow_404=True)
+          def observe(branch, expected_sha):
+            if main_sha() != EXPECTED_MAIN:
+              raise RuntimeError("canonical CKGB main moved")
+            ref = api("GET", f"/git/ref/heads/{quote(branch, safe='/')}", allow_404=True)
             if ref is None:
-              row["state"] = "ALREADY_ABSENT"
-              rows.append(row)
-              continue
+              return {"branch":branch,"expected_sha":expected_sha,"state":"ALREADY_ABSENT"}
             observed = str((ref.get("object") or {}).get("sha") or "")
-            row["observed_sha"] = observed
-            if observed != expected:
-              row["state"] = "PRESERVE_SHA_DRIFT"
-              rows.append(row)
-              continue
-            branch_meta = api(f"/branches/{quote(branch, safe='')}")
-            row["protected"] = bool(branch_meta.get("protected", False))
+            if observed != expected_sha:
+              raise RuntimeError(f"target SHA drift: {branch} expected={expected_sha} observed={observed}")
+            meta = api("GET", f"/branches/{quote(branch, safe='')}")
+            if bool(meta.get("protected", False)):
+              raise RuntimeError(f"GitHub protection blocks {branch}")
+            owner = REPOSITORY.split('/', 1)[0]
             h = urlencode({"state":"open","head":f"{owner}:{branch}","per_page":"1"})
             b = urlencode({"state":"open","base":branch,"per_page":"1"})
-            row["open_pr_head"] = bool(api(f"/pulls?{h}"))
-            row["open_pr_base"] = bool(api(f"/pulls?{b}"))
-            cmp = api(f"/compare/main...{quote(branch, safe='')}")
-            row["ahead_by"] = int(cmp["ahead_by"])
-            row["behind_by"] = int(cmp["behind_by"])
-            if row["protected"]:
-              row["state"] = "PRESERVE_PROTECTED"
-            elif row["open_pr_head"] or row["open_pr_base"]:
-              row["state"] = "PRESERVE_OPEN_PR"
-            elif row["ahead_by"] != 0:
-              row["state"] = "PRESERVE_DIVERGENT"
-            else:
-              row["state"] = "SAFE_ZERO_UNIQUE"
-            rows.append(row)
+            if api("GET", f"/pulls?{h}") or api("GET", f"/pulls?{b}"):
+              raise RuntimeError(f"live open PR protects {branch}")
+            cmp = api("GET", f"/compare/main...{quote(branch, safe='')}")
+            ahead = int(cmp["ahead_by"])
+            behind = int(cmp["behind_by"])
+            if ahead != 0:
+              raise RuntimeError(f"DIVERGENT target rejected: {branch} ahead_by={ahead}")
+            return {"branch":branch,"sha":observed,"ahead_by":ahead,"behind_by":behind,"state":"PRESENT_SAFE"}
 
-          counts = {}
-          for row in rows:
-            counts[row["state"]] = counts.get(row["state"], 0) + 1
-          receipt = {
-            "schema_version":"drj.ckgb_fresh_terminal_preflight.v1",
-            "repository":REPOSITORY,
-            "repository_id":REPOSITORY_ID,
-            "main":main,
-            "rows":rows,
-            "counts":counts,
-            "preserve":PRESERVE,
-            "effects":[],
-          }
-          out.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-          Path(os.environ["GITHUB_STEP_SUMMARY"]).write_text(
-            "# CKGB fresh terminal preflight\n\n" + "\n".join(f"- {k}: **{v}**" for k,v in sorted(counts.items())) + "\n",
-            encoding="utf-8",
-          )
+          try:
+            repo = api("GET", "")
+            if int(repo["id"]) != REPOSITORY_ID or str(repo["default_branch"]) != "main":
+              raise RuntimeError("repository identity/default mismatch")
+            if main_sha() != EXPECTED_MAIN:
+              raise RuntimeError("canonical CKGB main does not match narrowed authority")
+            pre = [observe(b,s) for b,s in TARGETS]
+            receipt["preflight"] = pre
+            present = [x for x in pre if x["state"] == "PRESENT_SAFE"]
+            receipt["already_absent"] = [x["branch"] for x in pre if x["state"] == "ALREADY_ABSENT"]
+            receipt["state"] = "PREFLIGHT_PASS"
+            persist()
+            by_branch = dict(TARGETS)
+            for item in present:
+              branch = item["branch"]
+              fresh = observe(branch, by_branch[branch])
+              if fresh["state"] == "ALREADY_ABSENT":
+                receipt["already_absent"].append(branch)
+                persist()
+                continue
+              api("DELETE", f"/git/refs/heads/{quote(branch, safe='/')}")
+              absent = False
+              for attempt in range(6):
+                if api("GET", f"/git/ref/heads/{quote(branch, safe='/')}", allow_404=True) is None:
+                  absent = True
+                  break
+                if attempt < 5:
+                  time.sleep(min(0.5 * (attempt + 1), 1.0))
+              receipt["effects"].append({**fresh,"delete_requests":1,"post_effect_absent":absent})
+              persist()
+              if not absent:
+                raise RuntimeError(f"post-effect absence not observed for {branch}")
+            receipt["state"] = "RECONCILED_PASS"
+            receipt["effects_reconciled_pass"] = len(receipt["effects"])
+            receipt["desired_state_reconciled"] = len(set(receipt["already_absent"])) + len(receipt["effects"])
+            receipt["completed_at"] = datetime.now(UTC).isoformat()
+            persist()
+            Path(os.environ["GITHUB_STEP_SUMMARY"]).write_text(
+              f"# CKGB narrowed ZERO_UNIQUE effect\n\nEffects: **{len(receipt['effects'])}**; already absent: **{len(set(receipt['already_absent']))}**; reconciled: **{receipt['desired_state_reconciled']}/3**\n",
+              encoding="utf-8",
+            )
+          except Exception as exc:
+            receipt["state"] = "FAILED_CLOSED"
+            receipt["error"] = str(exc)
+            receipt["completed_at"] = datetime.now(UTC).isoformat()
+            persist()
+            raise
           PY
-      - name: Preserve fresh preflight receipt
+      - name: Preserve effect receipt
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: drj-ckgb-fresh-preflight-${{ github.run_id }}
-          path: /tmp/drj-ckgb-fresh-preflight.json
-          if-no-files-found: error
+          name: drj-ckgb-zero-unique-b001a-${{ github.run_id }}
+          path: /tmp/drj-ckgb-b001a-effect.json
+          if-no-files-found: warn
           retention-days: 90
