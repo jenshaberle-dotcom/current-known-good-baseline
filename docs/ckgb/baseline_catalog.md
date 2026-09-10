@@ -66,6 +66,7 @@ Each item is selectable. CKGB is intentionally over-complete.
 | Shared-infrastructure migration contract | Advanced / Conditional | Warmrunner and Janitor migrations showed that safe replacement needs bounded consumer proof before portfolio cutover | Replacing shared infrastructure, runners, control planes, storage/runtime ownership | Additive feature with no legacy replacement or cross-project adoption |
 | Release-management core + profiles | Recommended | RCC, PED and JAP showed that source/version/release/install truth can diverge and operator installability may be a distinct gate | Versioned products, local apps, control planes or externally consumed artifacts | Throwaway/internal code with no release lifecycle |
 | Immutable GitHub Release delivery | Recommended for distributable products | RCC/JAP proved exact source/tag/version plus immutable assets and checksum make application delivery auditable and updateable without source rebuild | Versioned downloadable application/artifact hosted in GitHub | No distributable release artifact |
+| Explicit release-intent orchestration | Candidate / pilot only | PED exposed the need to request a release explicitly without making every product merge release-bearing or manually editing version identity | Versioned products where operators want deliberate patch/minor/major release intent separated from ordinary development and from publication | No release lifecycle, or projects that intentionally release every qualifying merge and need no separate operator intent |
 | Privileged release publisher boundary | Advanced / Conditional | RCC needed local signing authority without giving CI the publisher private-key boundary | Signed/privileged local apps or control planes | No privileged signing/host authority |
 | Consumer update without source rebuild | Recommended for local apps | Routine source clone/build/sign on consumer hosts makes update identity and dependencies drift | Released local applications with updater/install path | Development-only tooling where source build is the product |
 | NOVI-family game project baseline | Foundation for NOVI-family games | DOI/COTD exposed CI queue fan-out, signing/path drift and repeated cold-start provisioning on persistent runners | Every new NOVI-family game repository | Non-game projects or games intentionally outside the NOVI family |
@@ -81,6 +82,7 @@ Each item is selectable. CKGB is intentionally over-complete.
 
 - `docs/lessons-learned/active-portfolio-harvest-2026-09.md` — cross-project evidence and lessons.
 - `docs/tooling/github-release-delivery-baseline.md` — exact-source GitHub Release, `gh` publication, immutable assets, update and rollback profile.
+- `docs/tooling/explicit-release-intent-orchestration.md` — candidate control for explicit release request, exact-source locking, deterministic semantic version preparation and delegation to one canonical publisher.
 - `docs/tooling/runner-installation-and-path-baseline.md` — application install roots vs runner roots vs managed toolchain roots, runner provisioning and fallback.
 
 See `architecture_lifecycle.md` for maturity, migration, adoption and release-profile semantics.
