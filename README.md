@@ -10,4 +10,6 @@ It means:
 
 The template is intentionally over-complete. Project starts select the relevant subset and document non-selected controls.
 
+For versioned desktop/local products, start the release/update decision with `docs/tooling/product-distribution-update-baseline.md`. The default target is hosted build/package, centralized signing when selected, immutable release, consumer-local verified staging, consent/policy, isolated apply and rollback; self-hosted CI runners are development/acceptance infrastructure rather than a routine consumer prerequisite.
+
 For NOVI-family game repositories, start with `docs/project-start/NOVI-GAME-PROJECT-BASELINE.md`. It carries the shared CI queue contract, local Windows product-family layout, and shared developer signing boundary so new games extend the family rather than reinventing parallel infrastructure.
