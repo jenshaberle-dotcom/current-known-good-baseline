@@ -272,23 +272,41 @@ Use when:
 
 Do not allow both systems to remain system-of-record for the same slice without an explicit synchronization authority.
 
-### E. Short-lived replacement branch followed by atomic main cutover
+### E. Disposable replacement branch with moving main and proof-gated promotion
 
 Use when:
 
-- the repository can be frozen or change volume is low;
-- most of the active tree must change together;
-- incremental coexistence would create excessive semantic ambiguity;
-- validation can compare the complete replacement branch against acceptance criteria.
+- most of the active tree or one architectural concern must change coherently;
+- incremental coexistence inside the productive path would create excessive semantic ambiguity;
+- the replacement can be developed and qualified outside the productive authority surface.
+
+Main does **not** need to freeze. Main remains the single productive/current authority and may continue to receive normal work.
 
 Rules:
 
-- branch must be short-lived;
-- main must not continue evolving independently without a reconciliation plan;
-- cutover must include removal/archival of the displaced current truth;
-- after cutover, the old main state is history, not a second maintained baseline.
+- the replacement branch is a candidate, not a second current truth;
+- the branch should be disposable if the approach does not carry;
+- changes landing on main during the experiment must be reconciled into the candidate before promotion;
+- if main changes the same architectural concern, explicitly classify whether the candidate must absorb, supersede or restart from that change;
+- immediately before promotion, rebase/merge against the latest main and run the complete positive and negative proof suite on that reconciled head;
+- promotion is allowed only from a candidate proven against current main, not against an old branch point;
+- after successful promotion, the replacement branch is deleted; after failed qualification, it is abandoned/deleted and a new attempt may start from current main.
 
-A long-lived "new architecture" branch is usually a poor truth boundary because it creates two moving repositories inside one repository.
+This permits two moving Git histories while preserving only one productive authority. The dangerous state is not "main and a branch both receive commits"; it is allowing the candidate branch to acquire independent production authority or promoting a candidate that was only proven against stale main.
+
+A useful pattern is:
+
+`CURRENT_MAIN(A) + DISPOSABLE_CANDIDATE(B)`
+
+-> `reconcile candidate with latest CURRENT_MAIN`
+
+-> `prove B + prove absence/conflict resolution`
+
+-> `promote`
+
+-> `CURRENT_MAIN(B)`
+
+A failed candidate becomes evidence, not architecture. Harvest lessons/ADRs from it, then discard its active implementation state.
 
 ### F. New repository + harvest
 
