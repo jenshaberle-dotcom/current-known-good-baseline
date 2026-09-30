@@ -28,12 +28,20 @@
     }
   },
   "workflow_demands": {
-    "rcc-warm-profile-contract.yml": "linux-base",
+    "rcc-demand-validation.yml": "linux-base",
     "rcc-assignment-proof.yml": "assignment-proof"
   },
   "persistent_state_boundary": {
-    "allowed": ["generated-artifacts"],
-    "forbidden": ["source-authority", "python-executable", "toolchain-executable", "runner-selection", "runner-lifecycle"]
+    "allowed": [
+      "generated-artifacts"
+    ],
+    "forbidden": [
+      "source-authority",
+      "python-executable",
+      "toolchain-executable",
+      "runner-selection",
+      "runner-lifecycle"
+    ]
   },
   "ownership": {
     "demand_declaration": "CNGB",
