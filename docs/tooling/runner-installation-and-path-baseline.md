@@ -1,175 +1,122 @@
-# Runner Installation and Path Baseline
+# RCC General-Pool Runner Baseline
 
-Status: current-known-good conditional baseline
-Control ID: CKGB-RUNNER-PATH-001
-Origin: RCC + JAP warm-runner and local application work
+Status: current-known-good mandatory portfolio baseline  
+Control ID: CKGB-RUNNER-POOL-002  
+Owner: Runner Control Center (RCC)
 
 ## Purpose
 
-Persistent self-hosted runners reduce setup latency, but they create durable host state. That state must be explicit enough that discovery, provisioning, migration, cleanup and application installation do not guess ownership from directory names.
+The portfolio has one physical CI/workload runner architecture: the RCC General Pool.
 
-This baseline distinguishes **application installation** from **GitHub Actions runner installation/provisioning** and from **managed runner toolchains**.
+Every project other than RCC is a consumer. A project may define what a workload needs, but it must not define which physical runner exists, how many pool members exist, how a runner is registered, or how runner lifecycle is managed.
 
-## Three path classes
+## Authority split
 
-### 1. Application install root
+### RCC owns
 
-The released product lives here. It is governed by the product's release/install contract.
+- General Linux / General Windows physical fleet identity;
+- current pool `desired_count` and scale/reconcile;
+- physical registration/service/listener lifecycle;
+- repository-facade fanout;
+- atomic reservation and exact assignment;
+- runtime/profile materialization;
+- capability overlays;
+- qualification and clean-state proof;
+- recovery and retirement.
 
-Current examples:
+### Consumer repositories own
 
-- JAP Windows Control Center: `%LOCALAPPDATA%\JAP-Control-Center`;
-- RCC Windows app: `%LOCALAPPDATA%\RunnerControlCenterWinUI`;
-- RCC persistent application state: `%LOCALAPPDATA%\RunnerControlCenter`.
+- workload identity;
+- required platform;
+- runtime/dependency requirements;
+- required capabilities;
+- bounded parallelism semantics;
+- exact source/workflow contract;
+- product/effect semantics.
 
-Application state should be separated from replaceable application binaries where practical.
+Consumers must be cardinality-blind.
 
-### 2. GitHub Actions runner root
+## Baseline vs capability overlays
 
-The Actions runner payload, registration and work directory live here. It is governed by the runner/control-plane contract, not by the application installer.
+Keep the common fleet baseline deliberately small.
 
-Current RCC evidence includes:
+PowerShell 7 is a fleet baseline capability where RCC/workload architecture requires it and must be qualified from the same execution identity used by CI.
 
-- WSL runner root: `/home/jens_h/actions-runner`;
-- known Windows discovery roots: `C:\actions-runner`, `C:\actions-runners`, `%USERPROFILE%\actions-runner`.
+Everything that is not genuinely common is provisioned by RCC as a prepackaged/content-addressed capability overlay. Examples include:
 
-These are **evidence examples**, not universal CKGB defaults. New projects should declare their own canonical runner root/profile rather than copy a user-specific absolute path.
+- Kaggle CLI and authenticated provider binding;
+- Godot and export templates;
+- alternate Python versions;
+- Azure CLI and Bicep;
+- Docker;
+- .NET SDK variants;
+- project dependency environments.
 
-### 3. Managed runner toolchain root
+A capability requirement does not create a specialist runner class.
 
-Stable dependencies provisioned for persistent runners live separately from the Actions runner payload.
+## Forbidden consumer authority
 
-Current RCC implementation uses:
+Active consumer code, workflows, tests, current docs and Re-Entry state must not contain:
 
-- Windows: `%PUBLIC%\DeepOceanInfrastructure\RunnerToolchain` with CommonApplicationData fallback;
-- Linux/WSL: `$HOME/.cache/DeepOceanInfrastructure/RunnerToolchain`.
+- project-owned physical runner inventories;
+- project `desired_count`, `min_active`, `max_active` for physical capacity;
+- project runner profiles as host truth;
+- static facade/member lists;
+- fixed pool ordinals or cardinality regexes;
+- warm-runner heartbeat routing;
+- GitHub-hosted fallback as a normal route;
+- broad project labels that bypass RCC reservation;
+- project-side runner start/stop/register/deregister logic;
+- host-specific tool installation used to manufacture a specialist runner.
 
-This separation lets a runner registration be replaced or migrated without silently redefining dependency ownership.
-
-## Core rules
-
-1. **No path guessing for effects.** Discovery roots may be hints, but destructive/provisioning actions require exact repository/runner identity and current evidence.
-2. **Persist cross-OS runner paths.** If a Windows application invokes a WSL runner/runtime, pass the absolute Linux path explicitly and persist it.
-3. **Do not use the source checkout as durable runner state.** A persistent runner is execution capacity, not source authority.
-4. **Do not put managed toolchains inside arbitrary workload repos.** Toolchains belong to an owned provisioning surface.
-5. **Do not let workload repos supply arbitrary fallback host-install shell.** Declarative profile mismatches should either be repaired by the authorized provisioner or remain explicit stale/unsupported state.
-6. **Partial state is evidence.** A runner directory without registration/service/work markers may be a safe orphan only after all ownership and deletion predicates are revalidated.
-7. **Heartbeat and routing are separate from installation.** An installed warm runner can legitimately be sleeping/offline. Current routability must be observed rather than inferred from directory existence.
-
-## Project runner contract
-
-A serious self-hosted project should carry a machine-readable runner contract, e.g. `.rcc/runner-contract.json`, describing at least:
-
-```text
-repository_id
-project_key
-slot/profile id
-platform
-routing labels
-desired/min/max active capacity
-sleep policy
-runtime capabilities
-fallback policy
-heartbeat/freshness contract
-```
-
-Where workloads are portable, the current-known-good pattern is warm preferred with an explicit GitHub-hosted fallback and workflow opt-in. Fallback is a controlled routing decision, not silent execution drift.
-
-## Runner profile provisioning
-
-Provisioning should be profile-driven:
+## Workload transaction
 
 ```text
-desired profile
--> probe current host
--> classify mismatches
--> repair only supported requirements
--> re-probe
--> persist qualification evidence
+consumer Demand-v2
+  -> RCC validates repository + exact source/workflow
+  -> RCC resolves platform/runtime/capabilities
+  -> RCC materializes and qualifies required capabilities
+  -> RCC selects free General-Pool capacity
+  -> atomic reservation
+  -> exact repository facade
+  -> ephemeral assignment
+  -> exact-source workload
+  -> result verification
+  -> deterministic cleanup
+  -> reservation release
 ```
 
-Unsupported remaining requirements should produce a clear stale/profile error. Do not hide them by running arbitrary install commands supplied by the workload repository.
+Missing capacity/capability is an explicit RCC execution state. It must not silently fall back to a retired project runner or hosted runner.
 
-## Application installer entry points — current examples
+## Migration and retirement
 
-### JAP
-
-- WSL install entry: `scripts/install_jap_windows_control_center.sh`
-- WSL runtime entry: `scripts/run_jap_windows_control_center.sh`
-- Windows installer: `install-jap-control-center.ps1`
-- default app root: `%LOCALAPPDATA%\JAP-Control-Center`
-
-The Windows installer requires an explicit `WslInstalledRunnerPath`, validates that it is an absolute Linux path and persists it. This is the preferred pattern when one operating-system surface launches another: **resolve once from authority, pass explicitly, persist, verify**.
-
-### RCC
-
-- released/transition application installer: `install-rcc-control-center.ps1`
-- developer/local build-install helper: `tools/windows/Build-Install-RccLocal.ps1`
-- app install root in the helper: `%LOCALAPPDATA%\RunnerControlCenterWinUI`
-- app state root: `%LOCALAPPDATA%\RunnerControlCenter`
-
-`Build-Install-RccLocal.ps1` also demonstrates an important boundary: it validates repository identity, clean source and required local tools before a local developer build. That path must not be confused with routine GitHub-Release consumption.
-
-## Runner provisioning vs application installation
-
-Use this vocabulary consistently:
-
-| Surface | Owns | Must not own by implication |
-|---|---|---|
-| Product installer/updater | released app binaries, app provenance, app state migration, rollback | GitHub Actions runner registration |
-| Runner lifecycle/control plane | runner payload, registration/service, routing, sleep/wake, runner identity | product source/release truth |
-| Runner profile provisioner | supported stable toolchain/dependency requirements | arbitrary workload-defined host mutation |
-| Workload repository | desired runner contract/profile and portable workload | host-wide installation authority |
-
-## Migration rule
-
-A runner migration is not complete because a new directory exists. Require evidence for the relevant lifecycle:
+A migration is complete only after real replacement proof and hard retirement:
 
 ```text
-old identity classified
--> new target/provisioning prepared
--> profile qualified
--> registration/routing proven
--> real workload/heartbeat proof
--> old target reconciled
--> legacy retirement only after replacement proof
+inventory old authority
+-> introduce Demand-v2 replacement
+-> prove exact General-Pool workload
+-> prove no active reservation/work
+-> drain old routing
+-> stop/deregister old runner
+-> verify registration removal
+-> remove obsolete service/root when safe
+-> delete old code/workflows/docs/issues
+-> prove absence with regression guards
 ```
 
-Never recursively delete a partially migrated runner merely because it is not the desired final state.
+No blind deletion and no `--replace`.
 
-## Hosted fallback
+Historical evidence may remain only when it is structurally non-executable and clearly classified as history.
 
-RCC and JAP currently demonstrate a useful conditional policy:
+## Specialist exception
 
-```text
-strategy = WARM_PREFERRED_GITHUB_HOSTED
-provider = GITHUB_HOSTED_STANDARD
-portable_workloads_only = true
-required_workflow_opt_in = true
-```
+A specialist physical runner is exceptional. It requires a written technical proof that the workload cannot be implemented safely/correctly through:
 
-Use hosted fallback when the workload is genuinely portable and no local-only effect/capability is required. A fallback that cannot satisfy the workload contract must fail closed rather than pretending to be equivalent.
+`General Pool + RCC baseline + content-addressed capability overlay`.
 
-## Selection guidance
+Existing labels, local paths, convenience, setup time or historical configuration are not sufficient evidence.
 
-Select this baseline when any of these are true:
+## Portfolio regression rule
 
-- self-hosted GitHub Actions runners persist across jobs;
-- WSL/Windows paths cross an OS boundary;
-- warm runners can sleep/wake or be migrated;
-- stable toolchains are cached/provisioned outside individual repositories;
-- a local application also controls or invokes runner/runtime processes.
-
-Hosted-only disposable CI can usually omit persistent runner-root management.
-
-## Evidence origins
-
-- RCC `.rcc/runner-contract.json`
-- RCC `src/RunnerControlCenter/config.json`
-- RCC `src/RunnerControlCenter/Services/RunnerProfileVersioning.cs`
-- RCC `src/RunnerControlCenter/Services/RunnerProfileProvisioningService.cs`
-- RCC `docs/lessons-learned.md`
-- JAP `.rcc/runner-contract.json`
-- JAP `install-jap-control-center.ps1`
-- JAP `scripts/install_jap_windows_control_center.sh`
-- JAP `scripts/run_jap_windows_control_center.sh`
+New projects start Demand-v2-only. Existing active projects migrate to this baseline and physically retire superseded runners. A change that reintroduces a second runner architecture is a regression and must fail CI.
