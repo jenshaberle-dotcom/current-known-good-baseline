@@ -10,6 +10,8 @@ def test_expanded_ckgb_documents_exist() -> None:
         "docs/score-impact/t_score_impact_hypothesis.md",
         "docs/controls/deadwalker_quarantine_protocol.md",
         "docs/governance/reentry_and_failure_replan.md",
+        "docs/controls/hard-cut-rule-replacement.md",
+        "docs/knowledge/research/2026-09-28-truth-topology-and-migration-drift.md",
     ]
     for path in required:
         assert Path(path).exists(), path
@@ -44,6 +46,24 @@ def test_deadwalker_quarantine_contains_effect_side_freshness() -> None:
         "operator escalation",
         "D3",
         "DON/MCP",
+    ]
+    for term in required_terms:
+        assert term in text
+
+
+def test_hard_cut_rule_replacement_has_truth_topology_contract() -> None:
+    text = Path("docs/controls/hard-cut-rule-replacement.md").read_text(
+        encoding="utf-8"
+    )
+    required_terms = [
+        "Replace = Introduce + Destroy + Prove Absence",
+        "CURRENT",
+        "TRANSITION",
+        "HISTORICAL",
+        "Two implementations may coexist. Two independent current truths may not.",
+        "Negative architecture tests",
+        "Deep scans are recovery tools, not the steady-state control",
+        "agent entrypoint -> architecture/index",
     ]
     for term in required_terms:
         assert term in text
