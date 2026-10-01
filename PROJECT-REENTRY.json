@@ -26,10 +26,10 @@
     "consumer_adapter": "ckgb"
   },
   "runtime": {
-    "runner_contract": {
-      "status": "DECLARED",
-      "path": ".rcc/runner-contract.json"
-    }
+    "execution_authority": "RCC_GENERAL_POOL_DEMAND_V2_ONLY",
+    "workload_demand": ".rcc/workload-demands.json",
+    "consumer_physical_runner_authority": false,
+    "github_hosted_fallback": false
   },
   "extensions": {
     "baseline_catalog": "docs/ckgb/baseline_catalog.md",

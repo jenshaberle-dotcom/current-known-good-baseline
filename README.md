@@ -1,15 +1,22 @@
 # Current Known Good Baseline
 
-CKGB is a living project-start template based on lessons learned from DON/MCP, the job-application-pipeline, NOVI game development, and future projects.
+CKGB is a living project-start template based on lessons learned from DON/MCP, JAP, NOVI-family projects and the shared infrastructure portfolio.
 
-It is not a best-practice claim.
+It is not a timeless best-practice claim. It records the current known-good architecture supported by current evidence.
 
-It means:
+The template is intentionally over-complete. Project starts select the relevant product controls, but runner architecture is no longer project-specific.
 
-> This is the current known good baseline based on available evidence, project failures, repairs, and lessons learned.
+## Current runner baseline
 
-The template is intentionally over-complete. Project starts select the relevant subset and document non-selected controls.
+All normal repository CI and engineering workloads are consumers of the RCC General Pool.
 
-For versioned desktop/local products, start the release/update decision with `docs/tooling/product-distribution-update-baseline.md`. The default target is hosted build/package, centralized signing when selected, immutable release, consumer-local verified staging, consent/policy, isolated apply and rollback; self-hosted CI runners are development/acceptance infrastructure rather than a routine consumer prerequisite.
+- RCC owns the physical Linux/Windows runner fleet, cardinality, allocation, reservation, exact facade assignment, qualification and lifecycle.
+- Consumer repositories declare workload platform/runtime/capabilities only through Demand-v2.
+- Consumers do not own physical runner names, counts, profiles, heartbeat routing, hosted fallback or runner lifecycle.
+- PowerShell 7 is an RCC fleet baseline capability where required.
+- Non-baseline tools such as Kaggle CLI, Godot/export templates, alternate Python versions, Azure/Bicep, Docker and .NET variants are RCC-owned prepackaged/content-addressed capabilities materialized on demand.
+- A specialist physical runner is allowed only after evidence proves the General Pool plus overlays cannot satisfy the workload.
 
-For NOVI-family game repositories, start with `docs/project-start/NOVI-GAME-PROJECT-BASELINE.md`. It carries the shared CI queue contract, local Windows product-family layout, and shared developer signing boundary so new games extend the family rather than reinventing parallel infrastructure.
+For versioned desktop/local products, start the release/update decision with `docs/tooling/product-distribution-update-baseline.md`. Build/package/release qualification uses the same RCC General-Pool execution architecture; product installation/update remains a separate consumer-device concern.
+
+For NOVI-family game repositories, start with `docs/project-start/NOVI-GAME-PROJECT-BASELINE.md`. Engine/toolchain differences are capability demand, not a reason to create project-specific physical runners.

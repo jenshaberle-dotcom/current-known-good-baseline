@@ -1,0 +1,56 @@
+name: CNGB RCC Demand-v2 validation
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_sha:
+        required: true
+        type: string
+      rcc_facade_label:
+        required: true
+        type: string
+      rcc_assignment_label:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate General-Pool-only consumer
+    runs-on:
+      - self-hosted
+      - ${{ inputs.rcc_facade_label }}
+      - ${{ inputs.rcc_assignment_label }}
+    timeout-minutes: 10
+    env:
+      SOURCE_SHA: ${{ inputs.source_sha }}
+      RCC_EXPECTED_FACADE: ${{ inputs.rcc_facade_label }}
+      RCC_ASSIGNMENT_LABEL: ${{ inputs.rcc_assignment_label }}
+    steps:
+      - name: Prove exact RCC assignment
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$RUNNER_NAME" = "$RCC_EXPECTED_FACADE"
+          [[ "$RCC_ASSIGNMENT_LABEL" =~ ^rcc-assignment-proof-[0-9a-f]{32}$ ]]
+          [[ "$SOURCE_SHA" =~ ^[0-9a-f]{40}$ ]]
+          echo "CNGB_RCC_ASSIGNMENT=PASS runner=$RUNNER_NAME"
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_sha }}
+          persist-credentials: false
+
+      - name: Prove exact source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+
+      - name: Run runner-architecture absence guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tests/test_rcc_general_pool_hardcut.py

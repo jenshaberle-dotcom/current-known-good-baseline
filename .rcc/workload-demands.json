@@ -1,0 +1,66 @@
+{
+  "schema_version": "cngb.rcc_workload_demands.v2",
+  "repository_id": 1276271604,
+  "repository": "jenshaberle-dotcom/current-known-good-baseline",
+  "authority": {
+    "allocation": "RCC_AUTO_ONLY",
+    "reservation": "RCC_ATOMIC",
+    "physical_selection": "RCC_ONLY",
+    "facade_selection": "RCC_ONLY",
+    "profile_materialization": "RCC_ONLY",
+    "capability_provisioning": "RCC_ONLY",
+    "github_hosted_fallback": false,
+    "broad_project_routing": false,
+    "ephemeral_assignment_required": true,
+    "consumer_runner_lifecycle": false,
+    "consumer_runner_profile_ownership": false
+  },
+  "demand_profiles": {
+    "linux-base": {
+      "platform": "linux-wsl",
+      "runtime": [],
+      "capabilities": []
+    },
+    "assignment-proof": {
+      "platform": "rcc-selected",
+      "runtime": [],
+      "capabilities": []
+    }
+  },
+  "workflow_demands": {
+    "rcc-demand-validation.yml": "linux-base",
+    "rcc-assignment-proof.yml": "assignment-proof"
+  },
+  "persistent_state_boundary": {
+    "allowed": [
+      "generated-artifacts"
+    ],
+    "forbidden": [
+      "source-authority",
+      "python-executable",
+      "toolchain-executable",
+      "runner-selection",
+      "runner-lifecycle"
+    ]
+  },
+  "ownership": {
+    "demand_declaration": "CNGB",
+    "runner_profiles": "RCC",
+    "allocation": "RCC",
+    "reservation": "RCC",
+    "facade_activation": "RCC",
+    "capability_materialization": "RCC",
+    "qualification": "RCC",
+    "persistent_cache": "RCC_VERIFIED_CONTENT_ADDRESSED_ONLY",
+    "credentials": "HOST_OR_EXTERNAL_SECRET_STORE"
+  },
+  "workflow_admission": {
+    "rcc-demand-validation.yml": {
+      "event": "pull_request",
+      "source_binding": "pull_request_head_sha",
+      "base_branch": "main",
+      "auto_dispatch": true,
+      "effect_semantics": "validation-only"
+    }
+  }
+}
