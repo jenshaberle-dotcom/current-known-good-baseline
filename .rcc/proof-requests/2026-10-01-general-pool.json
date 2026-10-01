@@ -1,0 +1,11 @@
+{
+  "schema_version": "rcc.consumer_replacement_proof_request.v1",
+  "requested_at": "2026-10-01",
+  "source_base_sha": "e94116b025537f25b0433a6f1a65590c3ff99f3f",
+  "workflow": "rcc-demand-validation.yml",
+  "demand_profile": "linux-base",
+  "execution_authority": "RCC_ONLY",
+  "required_result": "EXACT_ASSIGNMENT_SUCCEEDED",
+  "legacy_retirement_gate": "CLOSED_UNTIL_REQUIRED_RESULT",
+  "physical_retirement_authority": "RCC_ONLY"
+}
