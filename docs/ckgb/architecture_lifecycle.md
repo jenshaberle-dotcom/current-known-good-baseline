@@ -150,6 +150,12 @@ HISTORICAL
 
 For `SUPERSEDED` or `FORBIDDEN`, the change must identify replacement authority and retirement/enforcement evidence. For `INTEGRATED` or `SPECIALIZED`, the relationship to the umbrella/current decision must be explicit enough that an agent cannot reasonably treat both as competing general authority.
 
+## Relationship to the engineering object lifecycle
+
+`CKGB-ENG-LIFECYCLE-001` is the umbrella lifecycle for created engineering objects. This architecture control remains `CURRENT / SPECIALIZED`: it adds architecture maturity, decision supersession, migration and authority-retirement semantics.
+
+Architecture changes must apply both controls. New architecture is not complete merely when introduced, and lifecycle changes must themselves classify the controls and executable surfaces they modify.
+
 ## Architecture garbage collection
 
 Garbage collection is part of architecture evolution, not optional repository tidying. After replacement, scan all relevant authority surfaces such as code, workflows, configuration, documentation, tests, examples, issues, generated artifacts and runtime registrations.
