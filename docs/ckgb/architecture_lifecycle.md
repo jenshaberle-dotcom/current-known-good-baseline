@@ -59,6 +59,78 @@ Otherwise harvest it to the platform/architecture backlog and continue the E2E o
 
 Root-cause learning is still required. Generalization, framework extraction and portfolio rollout are separate decisions.
 
+## Decision evolution and supersession lifecycle
+
+Architecture maturity describes how much evidence supports an architecture item. It does not describe what happens when one valid decision replaces another. Long-lived and agent-assisted projects need both models.
+
+The default decision-evolution lifecycle is:
+
+```text
+DECISION
+  -> VERSION
+  -> SUPERSEDES
+  -> MIGRATION
+  -> ENFORCEMENT
+  -> GARBAGE COLLECTION
+  -> RETIRED / HISTORICAL
+```
+
+This is a project-start design concern, not a runtime service owned by CKGB.
+
+Every material architecture decision should make its current authority and replacement semantics explicit. At minimum, a project should be able to distinguish:
+
+- `CURRENT` — authoritative for new work now.
+- `SUPERSEDED` — historically valid but replaced by an identified newer decision.
+- `FORBIDDEN` — must not regain executable or decision authority; recurrence is drift.
+- `HISTORICAL` — retained as evidence/context only and never selected as current guidance.
+
+A replacement decision should record at least:
+
+```text
+decision_id
+decision_version
+status
+supersedes
+superseded_by
+effective_scope
+migration_strategy
+migration_exit_criteria
+enforcement_refs
+retirement_criteria
+historical_refs
+```
+
+### Replacement invariant
+
+Introducing the new path is not sufficient proof that an architecture change is complete.
+
+The project should define, before implementation where practical:
+
+1. what becomes current;
+2. what is superseded;
+3. whether the old path remains temporarily valid, becomes immediately forbidden, or is historical only;
+4. how consumers migrate;
+5. what executable checks enforce the new invariant;
+6. what evidence closes migration;
+7. which stale artifacts must be removed, quarantined or made explicitly non-authoritative.
+
+Hard-cut, parallel/shadow migration and adopt-on-touch are migration strategies inside this lifecycle. None is the lifecycle itself.
+
+Git may preserve the full history. Agent and operator re-entry should preferentially surface current authority and explicit supersession links so historical artifacts are not mistaken for current requirements.
+
+### Architecture garbage collection
+
+Garbage collection is part of architecture evolution, not optional repository tidying. After replacement, scan all relevant authority surfaces such as code, workflows, configuration, documentation, tests, examples, issues, generated artifacts and runtime registrations.
+
+A successful retirement proves both:
+
+```text
+NEW_AUTHORITY == VALID
+OLD_AUTHORITY == NON_AUTHORITATIVE
+```
+
+Where the old state is explicitly `FORBIDDEN`, recurrence should fail an automated conformance check when such a check is practical.
+
 ## Shared architecture migration contract
 
 Default migration sequence:
