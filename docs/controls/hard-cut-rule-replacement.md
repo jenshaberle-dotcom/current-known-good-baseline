@@ -10,6 +10,15 @@ JAP/PED updater replacement and the WBAA Sol-first model-routing cut exposed the
 
 A repository that is treated as current truth must not contain multiple incompatible current authorities and rely on consumers to infer which one wins.
 
+
+## Lifecycle placement
+
+This control is a specialized migration/replacement strategy under `CKGB-ARCH-LIFECYCLE-001`.
+
+It is **not** the universal architecture-evolution lifecycle. Use hard cut when incompatible executable authorities must not coexist. Where bounded parallel/shadow migration is deliberately selected, the architecture lifecycle governs the migration and its exit criteria; this control becomes mandatory at the point where the superseded authority must become non-authoritative/forbidden.
+
+Lifecycle classification: `CURRENT / SPECIALIZED`.
+
 ## Core rule
 
 **Replace = Introduce + Destroy + Prove Absence.**
