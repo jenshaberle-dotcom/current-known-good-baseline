@@ -41,3 +41,14 @@ def test_architecture_lifecycle_declares_specialization() -> None:
 def test_catalog_exposes_engineering_lifecycle() -> None:
     text = read("docs/ckgb/baseline_catalog.md")
     assert "Engineering object lifecycle / creation-time hygiene" in text
+
+def test_edcp_consumes_engineering_lifecycle() -> None:
+    text = read("docs/ckgb/engineering_delivery_control_plane.md")
+    for term in (
+        "CKGB-ENG-LIFECYCLE-001",
+        "Test plans, status contexts, temporary evidence",
+        "superseded workflow",
+        "RCC owns cleanup of RCC-created execution state",
+        "DRJ may report lifecycle drift",
+    ):
+        assert term in text
