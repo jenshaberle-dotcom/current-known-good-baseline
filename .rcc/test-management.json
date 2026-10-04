@@ -4,37 +4,94 @@
   "repository": "jenshaberle-dotcom/current-known-good-baseline",
   "suites": {
     "full": {
-      "commands": [["{python}", "-m", "pytest", "-q", "tests"]],
+      "commands": [
+        [
+          "{python}",
+          "-m",
+          "pytest",
+          "-q",
+          "tests"
+        ]
+      ],
       "paths": [],
       "requires": []
     },
     "architecture_lifecycle": {
-      "commands": [["{python}", "-m", "pytest", "-q", "tests/test_architecture_lifecycle_self_application.py"]],
-      "paths": ["docs/ckgb/architecture_lifecycle.md", "docs/controls/", "docs/governance/"],
-      "requires": []
+      "commands": [
+        [
+          "{python}",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/test_architecture_lifecycle_self_application.py"
+        ]
+      ],
+      "paths": [
+        "docs/ckgb/architecture_lifecycle.md",
+        "docs/controls/",
+        "docs/governance/"
+      ],
+      "requires": [
+        "engineering_lifecycle"
+      ]
     },
     "rcc_contracts": {
-      "commands": [["{python}", "tests/test_rcc_general_pool_hardcut.py"]],
-      "paths": [".rcc/", ".github/workflows/", "docs/ckgb/engineering_delivery_control_plane.md"],
+      "commands": [
+        [
+          "{python}",
+          "tests/test_rcc_general_pool_hardcut.py"
+        ]
+      ],
+      "paths": [
+        ".rcc/",
+        ".github/workflows/",
+        "docs/ckgb/engineering_delivery_control_plane.md"
+      ],
+      "requires": []
+    },
+    "engineering_lifecycle": {
+      "commands": [
+        [
+          "{python}",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/test_engineering_object_lifecycle.py"
+        ]
+      ],
+      "paths": [
+        "docs/ckgb/engineering_object_lifecycle.md",
+        "docs/ckgb/architecture_lifecycle.md",
+        "docs/ckgb/engineering_delivery_control_plane.md",
+        "docs/ckgb/baseline_catalog.md"
+      ],
       "requires": []
     }
   },
   "actions": {
     "pr_validation": {
-      "required": ["full"],
+      "required": [
+        "full"
+      ],
       "default": [],
       "allow_omit": false,
       "impact_selection": false
     },
     "merge": {
-      "required": ["full"],
+      "required": [
+        "full"
+      ],
       "default": [],
       "allow_omit": false,
       "impact_selection": false
     },
     "diagnostic": {
-      "required": ["architecture_lifecycle"],
-      "default": ["rcc_contracts"],
+      "required": [
+        "architecture_lifecycle"
+      ],
+      "default": [
+        "rcc_contracts"
+      ],
       "allow_omit": true,
       "impact_selection": true
     }
