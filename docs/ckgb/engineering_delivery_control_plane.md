@@ -173,6 +173,16 @@ chat -> human -> privileged local host -> personal admin token -> workflow
 
 That path may remain an emergency/operator fallback, but it is not the normal delivery architecture.
 
+## Delivery-object lifecycle and hygiene
+
+EDCP consumes `CKGB-ENG-LIFECYCLE-001`. Test plans, status contexts, temporary evidence, workflow authority and branch-bound delivery state are lifecycle objects, not permanent by-products.
+
+A delivery/test policy should define which evidence is durable provenance and which state is ephemeral. Completion of a PR or delivery transition should close or retire temporary plan, claim, reservation and branch-bound state owned by that transition.
+
+Workflow replacement must classify old triggers and status contexts so a superseded workflow cannot remain a second certification authority. Test replacement must likewise classify old suites; a green legacy suite cannot certify a superseded contract.
+
+EDCP defines lifecycle intent and evidence semantics. RCC owns cleanup of RCC-created execution state. Consumer repositories own their workflow/test definitions. Repository delivery automation owns remote branch retirement where enabled. DRJ may report lifecycle drift but does not become cleanup authority.
+
 ## Observability invariant
 
 **Expected validation must never be represented by absence.**
