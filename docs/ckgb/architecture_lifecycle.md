@@ -118,7 +118,39 @@ Hard-cut, parallel/shadow migration and adopt-on-touch are migration strategies 
 
 Git may preserve the full history. Agent and operator re-entry should preferentially surface current authority and explicit supersession links so historical artifacts are not mistaken for current requirements.
 
-### Architecture garbage collection
+### Relationship to existing CKGB controls
+
+This lifecycle is the umbrella model for architecture evolution. It does not create parallel replacement semantics.
+
+Existing controls retain narrower responsibilities:
+
+| Control | Lifecycle role | Authority after this decision |
+|---|---|---|
+| `CKGB-CTRL-HARD-CUT-RULE-REPLACEMENT-001` | one replacement/migration strategy for incompatible executable authority | **CURRENT / SPECIALIZED** — applies when coexistence is unsafe; it does not define the general lifecycle |
+| `CKGB-CTRL-DEADWALKER-QUARANTINE-001` | detects/quarantines stale authority or evidence that regains influence | **CURRENT / SPECIALIZED** — freshness/quarantine control inside ENFORCEMENT and GARBAGE COLLECTION |
+| `docs/governance/reentry_and_failure_replan.md` | re-observes current authority before replay/effect | **CURRENT / SUPPORTING** |
+| earlier architecture promotion/migration semantics in this document | evidence maturity and adoption | **CURRENT / INTEGRATED** — complementary to decision supersession |
+
+No listed control is silently superseded by introducing this lifecycle. If a future lifecycle decision replaces one, that replacement must identify it explicitly by control ID and record its new state.
+
+### CKGB self-application invariant
+
+CKGB must consume its own lifecycle rules.
+
+A change to CKGB architecture/governance is incomplete until it classifies affected current controls as one of:
+
+```text
+UNCHANGED
+INTEGRATED
+SPECIALIZED
+SUPERSEDED
+FORBIDDEN
+HISTORICAL
+```
+
+For `SUPERSEDED` or `FORBIDDEN`, the change must identify replacement authority and retirement/enforcement evidence. For `INTEGRATED` or `SPECIALIZED`, the relationship to the umbrella/current decision must be explicit enough that an agent cannot reasonably treat both as competing general authority.
+
+## Architecture garbage collection
 
 Garbage collection is part of architecture evolution, not optional repository tidying. After replacement, scan all relevant authority surfaces such as code, workflows, configuration, documentation, tests, examples, issues, generated artifacts and runtime registrations.
 
