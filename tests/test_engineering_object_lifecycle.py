@@ -76,3 +76,20 @@ def test_merge_success_alone_is_not_lifecycle_completion() -> None:
     text = read("docs/ckgb/engineering_object_lifecycle.md")
     assert "Merge success alone is insufficient completion evidence" in text
     assert "Broad name-pattern/prefix deletion is not acceptable authority" in text
+
+
+def test_artifact_and_product_lifecycle_share_engineering_object_model() -> None:
+    text = read("docs/ckgb/engineering_object_lifecycle.md")
+    for term in (
+        "Unified artifact and product lifecycle",
+        "EPHEMERAL -> CANDIDATE -> QUALIFIED -> RELEASED -> SUPERSEDED -> RETIRED",
+        "DEPLOYED != ACCEPTED",
+        "FAILURE_EVIDENCE",
+        "PRODUCT_CURRENT",
+        "USER_DATA",
+        "UNKNOWN + AUTHORITY/EXECUTABLE = FAIL",
+        "PROMOTION_WITHOUT_TRANSITION_EVIDENCE = FAIL",
+        "RCC supplies execution",
+        "does not become product authority",
+    ):
+        assert term in text
