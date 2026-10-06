@@ -80,3 +80,82 @@ CKGB-CTRL-DEADWALKER-QUARANTINE-001 remains CURRENT / SPECIALIZED for stale auth
 The EDCP baseline remains CURRENT / INTEGRATED for delivery and test lifecycle execution semantics.
 
 This control is CURRENT / UMBRELLA for engineering-object creation, ownership, completion and retirement. It integrates rather than silently supersedes the specialized controls above.
+
+
+## Unified artifact and product lifecycle
+
+Branch hygiene is one specialization of the same engineering-object lifecycle. Projects must not
+invent unrelated cleanup semantics for CI artifacts, packages, OCI images, releases and deployed
+products.
+
+### Artifact lifecycle
+
+Every persistent build/test/release artifact should carry or be reconstructibly bound to:
+
+- stable artifact identity and type;
+- exact source revision;
+- producer and lifecycle owner;
+- creation time;
+- retention class;
+- qualification/promotion state;
+- supersession relationship;
+- cleanup condition and owner;
+- protected references;
+- absence evidence when retirement requires deletion.
+
+Baseline states are `EPHEMERAL -> CANDIDATE -> QUALIFIED -> RELEASED -> SUPERSEDED -> RETIRED`,
+with `PROTECTED` as an orthogonal retention condition rather than a promotion state.
+
+No artifact may become release authority solely because it exists or because its source tests
+passed. Qualification must bind the exact immutable artifact identity/digest to its exact source
+and evidence.
+
+### Product lifecycle
+
+Product state is distinct from artifact state:
+
+```text
+SOURCE_CANDIDATE
+  -> ARTIFACT_QUALIFIED
+  -> RELEASE_CANDIDATE
+  -> RELEASED
+  -> DEPLOYED
+  -> ACCEPTED
+  -> SUPERSEDED
+  -> RETIRED
+```
+
+`DEPLOYED != ACCEPTED`. Acceptance requires the project's explicit product E2E evidence against
+the exact deployed artifact/runtime identity. A status-file edit cannot promote a product without
+the transition evidence.
+
+A replacement product may become current only after its required acceptance transition. The prior
+accepted product becomes SUPERSEDED, not immediately disposable; rollback/retention policy decides
+when it can retire.
+
+### Retention classes
+
+At minimum distinguish:
+
+- `EPHEMERAL`: delete after the owning transition completes;
+- `ROLLBACK`: retain the bounded accepted release set required for rollback;
+- `EVIDENCE`: retain durable provenance according to evidence policy;
+- `FAILURE_EVIDENCE`: retain until the failure/uncertainty is reconciled and retention permits retirement;
+- `PRODUCT_CURRENT`: never generic-cleanup eligible;
+- `USER_DATA`: governed by the product privacy/data-retention lifecycle, never generic engineering cleanup.
+
+### Enforcement invariant
+
+For authority-bearing engineering objects:
+
+```text
+UNKNOWN + AUTHORITY/EXECUTABLE = FAIL
+SUPERSEDED + SELECTABLE_AS_CURRENT = FAIL
+EXPIRED + ACTIVE = FAIL
+RETIRED + PRESENT_WHERE_ABSENCE_REQUIRED = FAIL
+PROMOTION_WITHOUT_TRANSITION_EVIDENCE = FAIL
+```
+
+CKGB defines these invariants. Each consuming repository defines its concrete artifact/product
+types and transition evidence. EDCP/CI enforces the transition contract; RCC supplies execution
+capacity/evidence transport and does not become product authority.
