@@ -41,6 +41,7 @@ def test_architecture_lifecycle_declares_specialization() -> None:
 def test_catalog_exposes_engineering_lifecycle() -> None:
     text = read("docs/ckgb/baseline_catalog.md")
     assert "Engineering object lifecycle / creation-time hygiene" in text
+    assert "Native merged-branch retirement" in text
 
 def test_edcp_consumes_engineering_lifecycle() -> None:
     text = read("docs/ckgb/engineering_delivery_control_plane.md")
