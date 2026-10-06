@@ -33,11 +33,38 @@ Build, test and release artifacts, caches, receipts and temporary evidence requi
 
 ## Merge-completion hygiene
 
-A merged PR is not operationally complete while temporary development state remains active without purpose. Where platform and safety constraints permit, merge completion should idempotently retire the merged remote source branch, managed local worktrees or checkouts, branch-bound claims and reservations, and ephemeral validation state.
+For every PR-based repository, merged source-branch retirement is the default baseline, not optional tidying.
 
-Cleanup must be identity-bound. Delete only objects proven to belong to the merged PR, branch or correlation ID. Broad name-pattern deletion is not acceptable authority.
+Repository setup MUST enable the hosting platform's native delete-branch-on-merge capability when available. On GitHub this means `delete_branch_on_merge=true`. A project that intentionally cannot enable native deletion must record the reason and provide an equivalent identity-bound lifecycle mechanism.
 
-The component that creates or manages local state owns its normal cleanup. Repository or delivery lifecycle owns remote branch cleanup. DRJ may detect hygiene drift, but observation does not grant global janitor authority.
+A merged PR is not lifecycle-complete until its exact remote source branch is absent, unless the branch has an explicit current `PROTECTED` or `DEPENDENCY_BOUND` exception. Merge success alone is insufficient completion evidence.
+
+Cleanup must be identity-bound to the exact PR head repository, branch and observed head identity. Delete only objects proven to belong to that merge. Broad name-pattern/prefix deletion is not acceptable authority. If the branch moved after the merged PR head, automatic deletion must stop and the branch must be reclassified rather than assuming the newer commits were merged.
+
+The normal path is:
+
+```text
+PR MERGED
+  -> NATIVE DELETE-BRANCH-ON-MERGE
+  -> EXACT BRANCH ABSENT
+  -> MERGE LIFECYCLE COMPLETE
+```
+
+The component that creates or manages local state owns its normal cleanup. Repository/delivery lifecycle owns remote branch retirement. DRJ may detect hygiene drift, but observation does not grant global janitor authority.
+
+### Existing-repository bootstrap
+
+Adopting this baseline in an existing repository requires a one-time full branch census; old branches are not grandfathered.
+
+For each remote branch associated with a closed PR:
+
+- merged PR + unchanged exact head -> retirement candidate;
+- merged PR + branch head moved -> stop and classify; never delete the newer head on historical merge evidence;
+- closed/unmerged PR -> preserve until explicitly classified as abandoned/superseded and safe to retire;
+- protected/dependency-bound -> retain with explicit lifecycle reason;
+- no identifiable owner/history -> quarantine for reconciliation rather than pattern deletion.
+
+Bootstrap exit requires complete pagination, identity-bound retirement of eligible merged branches and absence proof. Thereafter native delete-on-merge prevents recurrence and lifecycle validation detects exceptions/drift.
 
 Preferred model:
 
