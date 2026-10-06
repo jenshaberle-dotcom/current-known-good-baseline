@@ -52,3 +52,26 @@ def test_edcp_consumes_engineering_lifecycle() -> None:
         "DRJ may report lifecycle drift",
     ):
         assert term in text
+
+
+def test_pr_repositories_default_to_native_branch_retirement() -> None:
+    text = read("docs/ckgb/engineering_object_lifecycle.md")
+    for term in (
+        "merged source-branch retirement is the default baseline",
+        "delete_branch_on_merge=true",
+        "exact remote source branch is absent",
+        "PROTECTED",
+        "DEPENDENCY_BOUND",
+        "branch head moved",
+        "one-time full branch census",
+        "old branches are not grandfathered",
+        "complete pagination",
+        "absence proof",
+    ):
+        assert term in text
+
+
+def test_merge_success_alone_is_not_lifecycle_completion() -> None:
+    text = read("docs/ckgb/engineering_object_lifecycle.md")
+    assert "Merge success alone is insufficient completion evidence" in text
+    assert "Broad name-pattern/prefix deletion is not acceptable authority" in text
