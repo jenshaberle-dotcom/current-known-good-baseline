@@ -1,8 +1,14 @@
 name: CNGB RCC Demand-v2 validation
+run-name: CNGB RCC validation ${{ inputs.source_sha }}
 
 on:
   workflow_dispatch:
     inputs:
+      test_plan:
+        description: Immutable RCC-selected validation plan; empty retains legacy guard
+        required: false
+        default: ""
+        type: string
       source_sha:
         required: true
         type: string
@@ -18,16 +24,14 @@ permissions:
 
 jobs:
   validate:
-    name: Validate General-Pool-only consumer
-    runs-on:
-      - self-hosted
-      - ${{ inputs.rcc_facade_label }}
-      - ${{ inputs.rcc_assignment_label }}
-    timeout-minutes: 10
+    name: Validate exact CKGB source
+    runs-on: [self-hosted, ${{ inputs.rcc_facade_label }}, ${{ inputs.rcc_assignment_label }}]
+    timeout-minutes: 20
     env:
       SOURCE_SHA: ${{ inputs.source_sha }}
       RCC_EXPECTED_FACADE: ${{ inputs.rcc_facade_label }}
       RCC_ASSIGNMENT_LABEL: ${{ inputs.rcc_assignment_label }}
+      RCC_TEST_PLAN: ${{ inputs.test_plan }}
     steps:
       - name: Prove exact RCC assignment
         shell: bash
@@ -41,6 +45,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.source_sha }}
+          fetch-depth: 0
           persist-credentials: false
 
       - name: Prove exact source
@@ -49,7 +54,39 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
 
-      - name: Run runner-architecture absence guard
+      - name: Bind runtime fingerprint
+        if: ${{ inputs.test_plan != '' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          runtime_hash="$(python3 - <<'PY'
+          import hashlib, platform, sys
+          print(hashlib.sha256(("python:"+platform.python_version()+":"+sys.executable).encode()).hexdigest())
+          PY
+          )"
+          printf 'RCC_TEST_RUNTIME_FINGERPRINT=%s\n' "$runtime_hash" >> "$GITHUB_ENV"
+
+      - name: Run immutable dynamic test plan
+        if: ${{ inputs.test_plan != '' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          policy_sha="$(python3 -c 'import json,os,re; p=json.loads(os.environ["RCC_TEST_PLAN"]); s=p["policy_sha"]; assert re.fullmatch(r"[0-9a-f]{40}",s); print(s)')"
+          trusted_launcher="$RUNNER_TEMP/ckgb-validation-plan-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.py"
+          trap 'rm -f -- "$trusted_launcher"' EXIT
+          git show "${policy_sha}:scripts/run_validation_test_plan.py" > "$trusted_launcher"
+          python3 "$trusted_launcher"
+
+      - name: Upload dynamic plan receipt
+        if: ${{ inputs.test_plan != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-test-receipt
+          path: artifacts/validation-test-receipt.json
+          if-no-files-found: error
+
+      - name: Run legacy architecture guard
+        if: ${{ inputs.test_plan == '' }}
         shell: bash
         run: |
           set -euo pipefail

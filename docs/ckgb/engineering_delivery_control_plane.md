@@ -120,6 +120,69 @@ A mature delivery contract should be able to declare at least:
 - retry/recovery semantics;
 - promotion/unblock transition.
 
+## Trigger plane and identity independence
+
+A delivery control plane is incomplete if a valid test request can only be initiated from one historical developer host or from credentials whose authority exists accidentally because that host's interactive user is a repository administrator.
+
+The project should separate four concerns:
+
+```text
+REQUESTER
+  -> AUTHENTICATED TRIGGER CONTRACT
+  -> DELIVERY / TEST POLICY
+  -> RCC OR OTHER EXECUTION PLANE
+  -> EVIDENCE
+```
+
+A Work chat, engineering agent, CLI, repository event or operator UI may all be request surfaces. None should need to become the CI authority itself.
+
+The trigger contract should accept bounded intent such as:
+
+- repository and exact source/ref;
+- requested lifecycle/test class or named suite;
+- reason/correlation ID;
+- effect/cost class;
+- optional suite parameters permitted by policy.
+
+The delivery control plane resolves that intent to the currently valid test selection and execution policy. The requester must not need runner identity, runner labels, physical topology or a privileged shell on a particular host.
+
+### Identity and authorization baseline
+
+For serious agent-assisted projects:
+
+- prefer workload/service identity with least privilege over a developer's long-lived personal admin credential;
+- authenticate the trigger at the repository/control-plane boundary and authorize the requested action separately;
+- bind execution and resulting evidence to the exact requested source revision;
+- make repository scope and allowed lifecycle/test classes explicit;
+- require stronger approval for effectful, destructive, release or high-cost suites;
+- use short-lived/federated credentials where the platform supports them;
+- keep secrets and privileged publisher/host authority outside chat context and outside ordinary test requests;
+- record requester identity, policy decision, selected suite, source identity and result as durable evidence.
+
+A Work chat therefore triggers CI **indirectly**: it submits authenticated test intent to a stable trigger surface. The delivery policy selects the suite and RCC (or another execution plane) supplies capacity. The chat does not depend on whichever developer machine happens to have an administrator login.
+
+### Trigger availability invariant
+
+If remote/agent-driven engineering is a supported operating mode, at least one supported trigger surface must be reachable without the developer's historical workstation.
+
+A project must not claim chat/agent-operable CI when the only working path is effectively:
+
+```text
+chat -> human -> privileged local host -> personal admin token -> workflow
+```
+
+That path may remain an emergency/operator fallback, but it is not the normal delivery architecture.
+
+## Delivery-object lifecycle and hygiene
+
+EDCP consumes `CKGB-ENG-LIFECYCLE-001`. Test plans, status contexts, temporary evidence, workflow authority and branch-bound delivery state are lifecycle objects, not permanent by-products.
+
+A delivery/test policy should define which evidence is durable provenance and which state is ephemeral. Completion of a PR or delivery transition should close or retire temporary plan, claim, reservation and branch-bound state owned by that transition.
+
+Workflow replacement must classify old triggers and status contexts so a superseded workflow cannot remain a second certification authority. Test replacement must likewise classify old suites; a green legacy suite cannot certify a superseded contract.
+
+EDCP defines lifecycle intent and evidence semantics. RCC owns cleanup of RCC-created execution state. Consumer repositories own their workflow/test definitions. Repository delivery automation owns remote branch retirement where enabled. DRJ may report lifecycle drift but does not become cleanup authority.
+
 ## Observability invariant
 
 **Expected validation must never be represented by absence.**

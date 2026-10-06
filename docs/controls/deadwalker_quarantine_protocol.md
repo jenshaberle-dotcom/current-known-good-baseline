@@ -12,6 +12,21 @@ DON issue #563 names the broader family `AUTHORITY-LINEAGE-INTEGRITY` and includ
 
 CKGB's earlier Draft PR #2 documented detection semantics but never became canonical main and later diverged from main. That stale draft is quarantined historical evidence, not template authority.
 
+
+## Lifecycle placement
+
+This control is a specialized authority-freshness and resurrection control under `CKGB-ARCH-LIFECYCLE-001`.
+
+Lifecycle classification: `CURRENT / SPECIALIZED`.
+
+State mapping:
+
+- lifecycle `CURRENT` corresponds to currently authoritative material; this protocol's older `ACTIVE` term is retained only within the quarantine model and must not be interpreted as a competing architecture status vocabulary;
+- `SUPERSEDED` and `HISTORICAL` retain the lifecycle meaning;
+- lifecycle `FORBIDDEN` is stronger than superseded: recurrence is itself a conformance failure;
+- `QUARANTINED` is an evidence/effect handling state, not an architecture-decision authority state;
+- `REVOKED` remains an authority-freshness condition where previously granted authority is explicitly withdrawn.
+
 ## Core rule
 
 A result may be technically valid for authority revision A and still be invalid as **current authority** after revision B supersedes A.
